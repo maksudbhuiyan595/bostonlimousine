@@ -37,6 +37,11 @@ class PagePolicy
         return $authUser->can('Delete:Page');
     }
 
+    public function deleteAny(AuthUser $authUser): bool
+    {
+        return $authUser->can('DeleteAny:Page');
+    }
+
     public function restore(AuthUser $authUser, Page $page): bool
     {
         return $authUser->can('Restore:Page');

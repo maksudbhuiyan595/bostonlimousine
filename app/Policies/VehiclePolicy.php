@@ -37,6 +37,11 @@ class VehiclePolicy
         return $authUser->can('Delete:Vehicle');
     }
 
+    public function deleteAny(AuthUser $authUser): bool
+    {
+        return $authUser->can('DeleteAny:Vehicle');
+    }
+
     public function restore(AuthUser $authUser, Vehicle $vehicle): bool
     {
         return $authUser->can('Restore:Vehicle');

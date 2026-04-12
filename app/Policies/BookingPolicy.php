@@ -37,6 +37,11 @@ class BookingPolicy
         return $authUser->can('Delete:Booking');
     }
 
+    public function deleteAny(AuthUser $authUser): bool
+    {
+        return $authUser->can('DeleteAny:Booking');
+    }
+
     public function restore(AuthUser $authUser, Booking $booking): bool
     {
         return $authUser->can('Restore:Booking');

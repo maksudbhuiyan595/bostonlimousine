@@ -10,6 +10,7 @@
 
 <body>
     <h1>welcome</h1>
+    <h1><a href="/admin">Login</a></h1>
 </body>
 
 </html>

@@ -37,6 +37,11 @@ class SurchargePolicy
         return $authUser->can('Delete:Surcharge');
     }
 
+    public function deleteAny(AuthUser $authUser): bool
+    {
+        return $authUser->can('DeleteAny:Surcharge');
+    }
+
     public function restore(AuthUser $authUser, Surcharge $surcharge): bool
     {
         return $authUser->can('Restore:Surcharge');

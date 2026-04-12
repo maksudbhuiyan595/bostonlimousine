@@ -37,6 +37,11 @@ class AirportPolicy
         return $authUser->can('Delete:Airport');
     }
 
+    public function deleteAny(AuthUser $authUser): bool
+    {
+        return $authUser->can('DeleteAny:Airport');
+    }
+
     public function restore(AuthUser $authUser, Airport $airport): bool
     {
         return $authUser->can('Restore:Airport');

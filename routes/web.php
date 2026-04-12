@@ -5,3 +5,8 @@ use App\Http\Controllers\RouteController;
 use App\Models\BlogPost;
 use App\Models\City;
 use Illuminate\Support\Facades\Route;
+
+Route::get('/', function () {
+
+    return view('welcome');
+});

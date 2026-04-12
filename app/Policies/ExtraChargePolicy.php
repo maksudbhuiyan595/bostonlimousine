@@ -37,6 +37,11 @@ class ExtraChargePolicy
         return $authUser->can('Delete:ExtraCharge');
     }
 
+    public function deleteAny(AuthUser $authUser): bool
+    {
+        return $authUser->can('DeleteAny:ExtraCharge');
+    }
+
     public function restore(AuthUser $authUser, ExtraCharge $extraCharge): bool
     {
         return $authUser->can('Restore:ExtraCharge');
