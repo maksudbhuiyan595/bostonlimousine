@@ -8,6 +8,6 @@ class Dashboard extends BaseDashboard
 {
     public static function canAccess(): bool
     {
-        return auth()->user()->hasRole('super_admin');
+        return auth()->user()->hasRole(['super_admin', 'Super Admin']);
     }
 }

@@ -28,4 +28,9 @@ class Booking extends Model implements Eventable
             ->backgroundColor($this->status === 'confirmed' ? '#10b981' : '#f59e0b') // Example logic
             ->action('edit');
     }
+
+    public function driver()
+    {
+        return $this->belongsTo(User::class, 'driver_id');
+    }   
 }

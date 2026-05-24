@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Bookings\Schemas;
 
 use App\Models\Airport;
 use App\Models\Booking;
+use App\Models\User;
 use Carbon\Carbon;
 use Dom\Text;
 use Filament\Forms\Components\DatePicker;
@@ -144,6 +145,14 @@ class BookingForm
                                 'partial' => 'Partial',
                                 'paid' => 'Paid',
                             ])->default('pending'),
+
+                        Select::make('driver_id')
+                            ->label('Assign Driver')
+                            ->options(User::role('Driver')->pluck('name', 'id'))
+                            ->searchable()
+                            ->preload()
+                            //only Super Admin can see the driver assignment field --- IGNORE ---
+                            ->visible(fn() => auth()->user()->hasRole('super_admin')),
 
                         Select::make('status')
                             ->options([
