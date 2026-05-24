@@ -14,6 +14,9 @@ use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use App\Models\User;
+use Filament\Actions\Action;
+use Filament\Forms\Components\Select;
 
 class BookingsTable
 {
@@ -32,6 +35,11 @@ class BookingsTable
                 TextColumn::make('trip_type')->badge()->color('info'),
 
                 TextColumn::make('total_fare')->money('USD')->weight('bold'),
+                TextColumn::make('driver.name')
+                    ->label('Assigned Driver')
+                    ->badge()
+                    ->color('warning')
+                    ->placeholder('Unassigned'),
 
                 SelectColumn::make('status')
                     ->options([
@@ -50,6 +58,21 @@ class BookingsTable
             ])
             ->recordActions([
                 EditAction::make(),
+                Action::make('assign_driver')
+                    ->label('Assign')
+                    ->icon('heroicon-m-truck')
+                    ->color('success')
+                    ->visible(fn() => auth()->user()->hasRole('super_admin'))
+                    ->form([
+                        Select::make('driver_id')
+                            ->label('Select Driver')
+                            ->options(User::role('Driver')->pluck('name', 'id'))
+                            ->searchable()
+                            ->required()
+                    ])
+                    ->action(function (Booking $record, array $data): void {
+                        $record->update(['driver_id' => $data['driver_id']]);
+                    }),
                 ViewAction::make()
                     ->modalHeading('Booking Details')
             ])
@@ -60,6 +83,5 @@ class BookingsTable
             ])
             ->recordUrl(null)
             ->recordAction(ViewAction::class);
-
     }
 }

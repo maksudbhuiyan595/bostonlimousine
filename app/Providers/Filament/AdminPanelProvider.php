@@ -59,7 +59,8 @@ class AdminPanelProvider extends PanelProvider
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([
-                Dashboard::class,
+                // Dashboard::class,
+                \App\Filament\Pages\Dashboard::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
@@ -89,12 +90,24 @@ class AdminPanelProvider extends PanelProvider
     public function boot(): void
     {
         Filament::serving(function () {
-            if (Auth::check() && !Auth::user()->hasRole('super_admin')) {
-                $currentUrl = request()->url();
-                $targetUrl = BlogPostResource::getUrl('index');
-                if ($currentUrl !== $targetUrl && !request()->routeIs('filament.admin.auth.*')) {
+            if (Auth::check()) {
+                $user = Auth::user();
+                if ($user->hasRole('super_admin') || $user->hasRole('Super Admin')) {
+                    return;
+                }
+                $canViewBookings = $user->can('view_any_booking') || $user->can('view_any_bookings::booking');
+                $canViewBlogs = $user->can('view_any_blog_post') || $user->can('view_any_blog::post');
+
+                $targetUrl = null;
+                if ($canViewBookings && !$canViewBlogs) {
+                    $targetUrl = \App\Filament\Resources\Bookings\BookingResource::getUrl('index');
+                }
+                if ($canViewBlogs && !$canViewBookings) {
+                    $targetUrl = url('/admin/blog-posts');
+                }
+                if ($targetUrl) {
                     config(['filament.home_url' => $targetUrl]);
-                    if (request()->path() === 'admin') {
+                    if (request()->path() === 'bookings') {
                         redirect()->to($targetUrl)->send();
                     }
                 }

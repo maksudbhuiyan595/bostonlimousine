@@ -104,6 +104,10 @@ class ViewBooking extends ViewRecord
                                     default => $state,
                                 })
                                 ->color('info'),
+                            TextEntry::make('driver.name')
+                                ->label('Assigned Driver')
+                                ->badge()
+                                ->placeholder('Not Assigned Yet'),
                         ]),
 
                         Grid::make(2)->schema([
