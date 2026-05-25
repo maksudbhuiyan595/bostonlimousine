@@ -244,16 +244,12 @@
             </div>
 
             <h1>
-                BLogan Airport Transfer - Your Trusted Solution for Premium Car Service in Boston  <br>
+                Boston Airport <br>
                 <span class="gold-split">Car Service</span>
             </h1>
 
             <div class="banner-description">
-                Welcome to Logan Airport Transfer – your dependable private transportation company serving Boston and surrounding Massachusetts areas along with neighboring states. We provide professional airport transportation, executive travel, long-distance rides, and premium car service designed for travelers who value comfort, punctuality, and safety.
-Whether you are heading to Boston Logan International Airport, attending an important business meeting, traveling with family, or planning a special event, we are committed to making every ride smooth, seamless, and stress-free.
-At Logan Airport Transfer, we combine quality and comfort with affordability to provide you with a great travel experience. With us, you will get professional service, clean vehicles, affordable pricing, and reliable scheduling to create a transportation experience you can trust.
-
-                {{-- Experience luxury, reliability, and punctuality with our premium Logan airport transfers and executive chauffeur services. Available 24/7. --}}
+                Experience luxury, reliability, and punctuality with our premium Logan airport transfers and executive chauffeur services. Available 24/7.
             </div>
 
             <div class="btn-group">
