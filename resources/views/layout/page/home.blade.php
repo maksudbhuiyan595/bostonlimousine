@@ -8,6 +8,7 @@
 @include('layout.include.serviceArea')
 @include('layout.include.service')
 @include('layout.include.feature')
+@include('layout.include.what_we_offer')
 @include('layout.include.blog')
 
 @endsection

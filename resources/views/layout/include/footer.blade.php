@@ -6,15 +6,15 @@
                     <h4 class="text-white mb-4 footer-title">Contact Information</h4>
                     <div class="d-flex align-items-start mb-3">
                         <i class="fa fa-map-marker-alt me-3 text-gold mt-1"></i>
-                        <span class="text-white">870 Main St, Woburn, MA 01801</span>
+                        <span class="text-white">12 highland Ave Woburn MA 01801</span>
                     </div>
                     <a href="tel:+16172306362" class="d-flex align-items-center mb-3">
                         <i class="fas fa-phone-alt me-3 text-gold"></i>
                         <span class="text-white">857-777-2125</span>
                     </a>
-                    <a href="mailto:bostonexpresscab24@gmail.com" class="d-flex align-items-center">
+                    <a href="mailto:loganairporttransfer@gmail.com" class="d-flex align-items-center">
                         <i class="fas fa-envelope me-3 text-gold"></i>
-                        <span class="text-white" style="font-size: 0.9rem;">bostonexpresscab24@gmail.com</span>
+                        <span class="text-white" style="font-size: 0.9rem;">loganairporttransfer@gmail.com</span>
                     </a>
                 </div>
             </div>
