@@ -259,11 +259,11 @@
             <div class="blog-header">
                 <div class="blog-badge">
                     <i class="fas fa-plane-arrival"></i>
-                    <span>Logan Airport Updates</span>
+                    <span>Logan Airport Transfer Updates</span>
                     <i class="fas fa-car"></i>
                 </div>
-                <h2>Latest <span class="gold-text">Car Service</span> Insights</h2>
-                <p>Stay updated with expert travel tips, Boston Logan airport news, and premium transportation guides.</p>
+                <h2>Latest <span class="gold-text">Car Service</span> Blogs</h2>
+                <p>Stay updated with expert travel tips, Logan airport transfer news, and premium transportation guides.</p>
                 <div class="animated-underline"></div>
             </div>
 
@@ -306,7 +306,7 @@
             </div>
 
             <a href="{{ route('blogs') }}" class="view-all-btn">
-                View All Airport Insights <i class="fas fa-long-arrow-alt-right"></i>
+                View All Airport Blogs <i class="fas fa-long-arrow-alt-right"></i>
             </a>
         </div>
     </section>

@@ -1,9 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Boston Limousine | Logan Airport Car Service</title>
+
     <!-- Bootstrap 5 + Icons + Flatpickr + Google Fonts -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -599,8 +594,8 @@
             }
         }
     </style>
-</head>
-<body>
+
+
 <section class="hero-section">
     <div class="container">
         <div class="text-center mb-3">
@@ -784,7 +779,7 @@
             <div class="col-lg-7 d-flex">
                 <div class="map-sidebar-card w-100">
                     <div class="map-header">
-                        <h4><i class="fas fa-map-marked-alt"></i> Boston Limousine • LIVE</h4>
+                        <h4><i class="fas fa-map-marked-alt"></i> Boston Logan Transfer • LIVE</h4>
                     </div>
                     <div id="map"></div>
                     <div class="location-info-panel">
@@ -1097,5 +1092,4 @@
         $(document).on('change keyup', '#fromAddress, #toAddress, select[name="from_airport"], select[name="to_airport"]', () => setTimeout(updateMapRoute, 400));
     }
 </script>
-</body>
-</html>
+

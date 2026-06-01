@@ -106,7 +106,7 @@
             <h2 style="color: var(--brand-gold); font-weight: 800; font-size: 3rem; margin-bottom: 15px;">Our Specialized Features</h2>
             <div style="width: 60px; height: 3px; background: var(--brand-gold); margin: 0 auto 20px auto;"></div>
             <p style="color: #666; max-width: 700px; margin: 0 auto; font-size: 1.05rem; line-height: 1.6;">
-                Enjoy unmatched convenience, safety, and customization with Boston Express Cab. We ensure seamless travel solutions tailored to your needs.
+                Enjoy unmatched convenience, safety, and customization with Boston Airport Transfer. We ensure seamless travel solutions tailored to your needs.
             </p>
         </div>
 
@@ -115,7 +115,7 @@
                 <div class="feature-card">
                     <div class="icon-box"><i class="fas fa-plane"></i></div>
                     <h4>Airport Transfer</h4>
-                    <p>Reliable Logan Airport pickups with expert flight tracking.</p>
+                    <p>Reliable Logan Airport Transfer pickups with expert flight tracking.</p>
                 </div>
                 <div class="feature-card">
                     <div class="icon-box"><i class="fas fa-baby-carriage"></i></div>
@@ -140,8 +140,8 @@
                 </div>
                 <div class="feature-card">
                     <div class="icon-box"><i class="fas fa-history"></i></div>
-                    <h4>Hourly Service</h4>
-                    <p>Flexible chauffeured service tailored to your personal schedule.</p>
+                    <h4>Long Distance Car Service</h4>
+                    <p>Need transportation outside Boston? Our long-distance car service offers comfortable and private transportation for travelers heading across Massachusetts and neighboring states.</p>
                 </div>
             </div>
         </div>
