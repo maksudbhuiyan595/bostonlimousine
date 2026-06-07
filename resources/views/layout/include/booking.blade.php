@@ -1,5 +1,4 @@
-
-    <!-- Bootstrap 5 + Icons + Flatpickr + Google Fonts -->
+<!-- Bootstrap 5 + Icons + Flatpickr + Google Fonts -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
@@ -30,7 +29,7 @@
         }
 
         body {
-            background: linear-gradient(135deg, #0F171D 0%, #1A242C 100%);
+            /* background: linear-gradient(135deg, #0F171D 0%, #1A242C 100%); */
             font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
         }
         .hero-section {
@@ -56,6 +55,7 @@
             padding: 28px 0 50px 0;
             position: relative;
         }
+        
 
         /* ---------- COMPACT PREMIUM AMBER CARD ---------- */
         .reservation-card {
@@ -597,7 +597,7 @@
 
 
 <section class="hero-section">
-    <div class="container">
+    <div class="container mt-3">
         <div class="text-center mb-3">
             <h1 class="display-6 fw-bold" style="color: #FFFFFF; text-shadow: 0 2px 8px rgba(0,0,0,0.3); letter-spacing: -0.6px; font-size: 1.6rem;">
                 <i class="fas fa-plane-departure me-2" style="color: #B9924B;"></i>
@@ -779,7 +779,7 @@
             <div class="col-lg-7 d-flex">
                 <div class="map-sidebar-card w-100">
                     <div class="map-header">
-                        <h4><i class="fas fa-map-marked-alt"></i> Boston Logan Transfer • LIVE</h4>
+                        <h4><i class="fas fa-map-marked-alt"></i>Logan Airport Transfer • LIVE</h4>
                     </div>
                     <div id="map"></div>
                     <div class="location-info-panel">

@@ -1,4 +1,4 @@
-<div class="container-fluid nav-bar sticky-top px-0 px-lg-4 shadow-lg" id="mainNavbar">
+<div class="container-fluid nav-bar px-0 px-lg-4 shadow-lg" id="mainNavbar">
     <div class="container h-100">
         <nav class="navbar navbar-expand-lg p-0 h-100">
             <a href="{{ url('/') }}" class="navbar-brand p-0 premium-logo">
@@ -34,14 +34,14 @@
                     <li class="nav-item">
                         <a href="{{ route('reservation') }}" class="nav-link {{ request()->routeIs('reservation') ? 'active' : '' }}">Reservation</a>
                     </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">Minivan</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link">Minivan</a></li>
                     <li class="nav-item"><a href="#" class="nav-link">Long Distance</a></li>
                     <li class="nav-item"><a href="#" class="nav-link">Child Seat</a></li>
                     <li class="nav-item"><a href="#" class="nav-link">Services</a></li>
                     <li class="nav-item"><a href="#" class="nav-link">Blogs</a></li>
                     <li class="nav-item">
-                        <a href="{{ route('contact') }}" class="nav-link {{ request()->routeIs('contact') ? 'active' : '' }}">Contact</a></li>
+                        <a href="{{ route('contact') }}" class="nav-link {{ request()->routeIs('contact') ? 'active' : '' }}">Contact</a>
+                    </li>
                 </ul>
 
                 <a href="tel:+18577772125" class="desktop-call-btn d-none d-lg-flex">
@@ -61,39 +61,33 @@
     --brand-dark: #1A1A1A;
     --brand-white: #FFFFFF;
     --nav-height: 90px;
-    --nav-scrolled-height: 75px;
 }
 
-/* Base Navbar Styles */
+/* Base Navbar Styles (Strict Fixed Height) */
 .nav-bar {
-    background: var(--brand-white) !important;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: var(--brand-dark) !important;
     border-bottom: 2px solid var(--brand-gold);
-    height: var(--nav-height);
+    height: var(--nav-height) !important; /* Forces the 90px height permanently */
     display: flex;
     align-items: center;
     z-index: 1030;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: background 0.3s ease, box-shadow 0.3s ease, backdrop-filter 0.3s ease;
 }
 
-/* --- SCROLLED STATE (Animation) --- */
+/* --- SCROLLED STATE (No Height Change) --- */
 .nav-bar.is-scrolled {
-    height: var(--nav-scrolled-height) !important;
-    background: rgba(255, 255, 255, 0.95) !important;
-    backdrop-filter: blur(10px); /* Modern frosted glass effect */
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1) !important;
-    position: fixed;
-    top: 0;
-    width: 100%;
-    animation: navSlideDown 0.5s ease;
+    background: rgba(26, 26, 26, 0.95) !important; /* Translucent glass effect on scroll */
+    backdrop-filter: blur(10px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
 }
 
-@keyframes navSlideDown {
-    from { transform: translateY(-100%); }
-    to { transform: translateY(0); }
-}
-
+/* Keeps logo size identical on scroll */
 .nav-bar.is-scrolled .logo-img {
-    height: 60px; /* Shrink logo slightly */
+    height: 80px;
 }
 
 /* Desktop Navigation */
@@ -109,7 +103,7 @@
         gap: 5px;
     }
     .nav-link {
-        color: var(--brand-dark);
+        color: var(--brand-white) !important; /* White text for dark theme contrast */
         font-weight: 600;
         padding: 8px 15px;
         transition: all 0.3s ease;
@@ -138,7 +132,14 @@
 
 /* Mobile Menu Styles */
 @media (max-width: 991.98px) {
-    .nav-bar { height: 80px; }
+    .nav-bar,
+    .nav-bar.is-scrolled {
+        height: 80px !important; /* Strict 80px for mobile view */
+    }
+    .nav-bar .logo-img,
+    .nav-bar.is-scrolled .logo-img {
+        height: 55px; /* Locked logo size for mobile */
+    }
 
     .navbar-collapse-custom {
         position: fixed;
@@ -213,9 +214,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const closeBtn = document.getElementById('closeMenuBtn');
     const menu = document.getElementById('navbarCollapse');
 
-    // 1. SCROLL ANIMATION LOGIC
+    // 1. SCROLL ANIMATION LOGIC (Adds blur/shadow without changing height)
     window.addEventListener('scroll', function() {
-        if (window.scrollY > 80) {
+        if (window.scrollY > 40) {
             navbar.classList.add('is-scrolled');
         } else {
             navbar.classList.remove('is-scrolled');

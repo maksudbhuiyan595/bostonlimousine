@@ -1,6 +1,4 @@
 
-
-
     <style>
         :root {
             --brand-gold: #C5A059;
