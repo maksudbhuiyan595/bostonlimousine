@@ -398,10 +398,10 @@ class AppController extends Controller
     {
         return view("layout.page.reservation");
     }
-    public function areaWeServe(Request $request)
+    public function services(Request $request)
     {
          $cities = City::where('is_featured',true)->orderBy('name', 'asc')->paginate(30);
-        return view("frontend.layouts.pages.servicearea",compact('cities'));
+        return view("layout.page.services",compact('cities'));
     }
     public function childSeat(Request $request)
     {

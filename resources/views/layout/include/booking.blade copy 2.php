@@ -1,10 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Boston Limousine | Logan Airport Car Service</title>
-    <!-- Bootstrap 5 + Icons + Flatpickr + Google Fonts -->
+<!-- Bootstrap 5 + Icons + Flatpickr + Google Fonts -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
@@ -35,7 +29,7 @@
         }
 
         body {
-            background: linear-gradient(135deg, #0F171D 0%, #1A242C 100%);
+            /* background: linear-gradient(135deg, #0F171D 0%, #1A242C 100%); */
             font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
         }
         .hero-section {
@@ -61,6 +55,7 @@
             padding: 28px 0 50px 0;
             position: relative;
         }
+
 
         /* ---------- COMPACT PREMIUM AMBER CARD ---------- */
         .reservation-card {
@@ -164,13 +159,13 @@
             flex-direction: row;
             gap: 8px;
             margin: 6px 0 10px 0;
-            flex-wrap: nowrap;      /* FORCE SINGLE ROW */
+            flex-wrap: nowrap;
             width: 100%;
         }
 
         .trip-option {
             flex: 1;
-            min-width: 0;           /* prevents overflow issues */
+            min-width: 0;
         }
 
         .trip-option input {
@@ -475,7 +470,6 @@
             .booking-inner {
                 padding: 12px;
             }
-            /* Ensure mobile single row override */
             .trip-type-container {
                 flex-wrap: nowrap !important;
             }
@@ -546,7 +540,6 @@
                 width: 100% !important;
             }
 
-            /* TRIP KEEPS SINGLE ROW NO MATTER WHAT */
             .trip-type-container {
                 flex-direction: row;
                 flex-wrap: nowrap;
@@ -601,10 +594,10 @@
             }
         }
     </style>
-</head>
-<body>
+
+
 <section class="hero-section">
-    <div class="container">
+    <div class="container mt-3">
         <div class="text-center mb-3">
             <h1 class="display-6 fw-bold" style="color: #FFFFFF; text-shadow: 0 2px 8px rgba(0,0,0,0.3); letter-spacing: -0.6px; font-size: 1.6rem;">
                 <i class="fas fa-plane-departure me-2" style="color: #B9924B;"></i>
@@ -621,7 +614,8 @@
                         <p>Instant Reservation EMAIL Confirmation</p>
                     </div>
                     <div class="booking-inner">
-                        <form id="reservationForm" action="{{ route('step2') }}" method="GET" novalidate>
+                        <form id="reservationForm" action="{{ route('step2') }}" method="POST" novalidate>
+                            @csrf
                             <input type="hidden" name="extras_total" id="extrasTotalInput" value="0">
 
                             <!-- Date & Time row compact -->
@@ -677,13 +671,18 @@
                                     <span class="mini-label"><i class="fas fa-user-tie me-1"></i> Adults (8+)</span>
                                     <select name="adults" id="adults" class="form-select" required>
                                         <option value="">Select</option>
-                                           @for ($i = 1; $i <= 14; $i++) <option value="{{ $i }}">{{ $i }}</option> @endfor
+                                        @for ($i = 1; $i <= 14; $i++)
+                                            <option value="{{ $i }}">{{ $i }}</option>
+                                        @endfor
                                     </select>
                                 </div>
                                 <div class="col-6">
                                     <span class="mini-label"><i class="fas fa-child me-1"></i> Children (≤7)</span>
                                     <select name="children" id="children" class="form-select">
-                                        @for ($i = 0; $i <= 6; $i++) <option value="{{ $i }}">{{ $i }}</option> @endfor
+                                        <option value="0">0</option>
+                                        @for ($i = 1; $i <= 6; $i++)
+                                            <option value="{{ $i }}">{{ $i }}</option>
+                                        @endfor
                                     </select>
                                 </div>
                             </div>
@@ -692,13 +691,19 @@
                                 <div class="col-6">
                                     <span class="mini-label"><i class="fas fa-suitcase-rolling me-1"></i> Luggage</span>
                                     <select name="luggage" id="luggage" class="form-select" required>
-                                         @for ($i = 0; $i <= 12; $i++) <option value="{{ $i }}">{{ $i }}</option> @endfor
+                                        <option value="">Select luggage</option>
+                                        @for ($i = 0; $i <= 12; $i++)
+                                            <option value="{{ $i }}">{{ $i }}</option>
+                                        @endfor
                                     </select>
                                 </div>
                                 <div class="col-6">
                                     <span class="mini-label"><i class="fas fa-car-seat me-1"></i> Child Seats</span>
                                     <select name="seats_dummy" id="childSeatsTrigger" class="form-select">
-                                         @for ($i = 1; $i <= 6; $i++) <option value="{{ $i }}">{{ $i }}</option> @endfor
+                                        <option value="0">0</option>
+                                        @for ($i = 1; $i <= 6; $i++)
+                                            <option value="{{ $i }}">{{ $i }}</option>
+                                        @endfor
                                     </select>
                                 </div>
                             </div>
@@ -712,18 +717,18 @@
                                 </div>
                                 <div id="extrasSection">
                                     <div class="extra-row">
-                                        <div class="extra-label">Stopover <span class="extra-price-tag"> {{ $settings->stopover_fee ?? 0 }}</span></div>
+                                        <div class="extra-label">Stopover <span class="extra-price-tag">${{ $settings->stopover_fee ?? 0 }}</span></div>
                                         <div class="d-flex align-items-center gap-2">
-                                            <select id="stopover" data-price="{{ $settings->stopover_fee ?? 0 }}" class="form-select">
-                                                <option value="0">0</option><option value="1">1</option><option value="2">2</option>
+                                            <select id="stopover" name="stopover" data-price="{{ $settings->stopover_fee ?? 0 }}" class="form-select">
+                                                <option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option>
                                             </select>
                                             <div id="stopoverDisplay" class="total-price-display">$0</div>
                                         </div>
                                     </div>
                                     <div class="extra-row">
-                                        <div class="extra-label">Pets <span class="extra-price-tag">{{ $settings->pets_fee ?? 0 }}</span></div>
+                                        <div class="extra-label">Pets <span class="extra-price-tag">${{ $settings->pet_fee ?? $settings->stopover_fee ?? 0 }}</span></div>
                                         <div class="d-flex align-items-center gap-2">
-                                            <select id="pets" data-price="{{ $settings->pets_fee ?? 0 }}" class="form-select">
+                                            <select id="pets" name="pets" data-price="{{ $settings->pet_fee ?? $settings->stopover_fee ?? 0 }}" class="form-select">
                                                 <option value="0">0</option><option value="1">1</option><option value="2">2</option>
                                             </select>
                                             <div id="petsDisplay" class="total-price-display">$0</div>
@@ -732,8 +737,8 @@
                                     <div class="extra-row">
                                         <div class="extra-label">Infant Seat <span class="extra-price-tag">${{ $settings->child_seat_fee ?? 0 }}</span></div>
                                         <div class="d-flex align-items-center gap-2">
-                                            <select id="infantSeat" data-price="{{ $settings->child_seat_fee ?? 0 }}" class="form-select">
-                                                <option value="0">0</option><option value="1">1</option><option value="2">4</option>
+                                            <select id="infantSeat" name="infant_seat" data-price="{{ $settings->child_seat_fee ?? 0 }}" class="form-select">
+                                                <option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option>
                                             </select>
                                             <div id="infantSeatDisplay" class="total-price-display">$0</div>
                                         </div>
@@ -741,8 +746,8 @@
                                     <div class="extra-row">
                                         <div class="extra-label">Front Facing <span class="extra-price-tag">${{ $settings->regular_Seat_rules ?? 0 }}</span></div>
                                         <div class="d-flex align-items-center gap-2">
-                                            <select id="frontSeat" data-price="{{ $settings->regular_Seat_rules ?? 0 }}" class="form-select">
-                                                <option value="0">0</option><option value="1">1</option><option value="2">4</option>
+                                            <select id="frontSeat" name="front_seat" data-price="{{ $settings->regular_Seat_rules ?? 0 }}" class="form-select">
+                                                <option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option>
                                             </select>
                                             <div id="frontSeatDisplay" class="total-price-display">$0</div>
                                         </div>
@@ -750,8 +755,8 @@
                                     <div class="extra-row">
                                         <div class="extra-label">Booster Seat <span class="extra-price-tag">${{ $settings->booster_seat_fee ?? 0 }}</span></div>
                                         <div class="d-flex align-items-center gap-2">
-                                            <select id="boosterSeat" data-price="{{ $settings->booster_seat_fee ?? 0 }}" class="form-select">
-                                                <option value="0">0</option><option value="1">1</option><option value="2">4</option>
+                                            <select id="boosterSeat" name="booster_seat" data-price="{{ $settings->booster_seat_fee ?? 0 }}" class="form-select">
+                                                <option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option>
                                             </select>
                                             <div id="boosterSeatDisplay" class="total-price-display">$0</div>
                                         </div>
@@ -774,7 +779,7 @@
             <div class="col-lg-7 d-flex">
                 <div class="map-sidebar-card w-100">
                     <div class="map-header">
-                        <h4><i class="fas fa-map-marked-alt"></i> Boston Limousine • LIVE</h4>
+                        <h4><i class="fas fa-map-marked-alt"></i>Logan Airport Transfer • LIVE</h4>
                     </div>
                     <div id="map"></div>
                     <div class="location-info-panel">
@@ -928,12 +933,50 @@
         setTimeout(() => updateMapRoute(), 250);
     }
 
+    function updateLuggageByPassengers() {
+        let adults = parseInt($("#adults").val()) || 0;
+        let children = parseInt($("#children").val()) || 0;
+        let totalPax = adults + children;
+
+        if (totalPax === 0) return;
+
+        // Show loading state
+        $("#luggage").html('<option value="">Loading...</option>');
+        $("#luggage").prop('disabled', true);
+
+        $.ajax({
+            url: "{{ route('luggage.capacity') }}",
+            type: "GET",
+            data: { passenger: totalPax },
+            dataType: "json",
+            success: function(response) {
+                const maxLuggage = (response && response.capacity_luggage !== undefined) ? parseInt(response.capacity_luggage) : 12;
+                let html = '<option value="">Select luggage</option>';
+                for (let i = 0; i <= maxLuggage; i++) {
+                    let selected = (i === 1) ? 'selected' : '';
+                    html += `<option value="${i}" ${selected}>${i}</option>`;
+                }
+                $("#luggage").html(html);
+                $("#luggage").prop('disabled', false);
+            },
+            error: function() {
+                let html = '<option value="">Select luggage</option>';
+                for (let i = 0; i <= 12; i++) {
+                    html += `<option value="${i}" ${i === 1 ? 'selected' : ''}>${i}</option>`;
+                }
+                $("#luggage").html(html);
+                $("#luggage").prop('disabled', false);
+            }
+        });
+    }
+
     document.addEventListener("DOMContentLoaded", () => {
         fetchAirports().then(response => { airportsData = response; initializeForm(); }).catch(error => { console.error(error); airportsData = [{ id: 1, name: "Boston Logan International Airport", address: "Boston Logan Int'l Airport, Boston, MA" }]; initializeForm(); });
     });
 
     function initializeForm() {
         flatpickr("#date", { minDate: "today", dateFormat: "Y-m-d", disableMobile: true });
+
         const timeSelect = document.getElementById("time");
         for (let h = 0; h < 24; h++) {
             for (let m = 0; m < 60; m += 15) {
@@ -942,17 +985,111 @@
                 timeSelect.innerHTML += `<option value="${hh}:${mmStr}">${displayHour}:${mmStr} ${ampm}</option>`;
             }
         }
-        function updateLuggageMax() { let adults = parseInt($("#adults").val()) || 1, children = parseInt($("#children").val()) || 0, total = adults + children, maxLug = Math.min(10, total + 2); let opts = '<option value="">Select luggage</option>'; for (let i = 0; i <= maxLug; i++) opts += `<option value="${i}">${i}</option>`; $("#luggage").html(opts); if ($("#luggage").val() === "") $("#luggage").val(1); }
-        $("#adults, #children").on("change", updateLuggageMax); updateLuggageMax();
-        document.querySelectorAll('input[name="tripType"]').forEach(r => r.addEventListener('change', (e) => { updateTripFields(); if(e.target.value === 'doorToDoor') Swal.fire({ icon: 'info', title: '🚖 Door-to-Door', text: 'Call Concierge 857-777-2125', background: '#0F171D', color: '#FFF', confirmButtonColor: '#B9924B' }); }));
+
+        // Luggage update on passenger change using AJAX
+        $("#adults, #children").on("change", function() {
+            updateLuggageByPassengers();
+        });
+
+        // Initial luggage load
+        setTimeout(updateLuggageByPassengers, 100);
+
+        // Trip type change handler with Door-to-Door notification
+        document.querySelectorAll('input[name="tripType"]').forEach(r => r.addEventListener('change', (e) => {
+            updateTripFields();
+            if(e.target.value === 'doorToDoor') {
+                Swal.fire({
+                    icon: 'info',
+                    title: '🚖 Door-to-Door Service',
+                    text: 'Please call our concierge at 857-777-2125 for door-to-door booking',
+                    background: '#0F171D',
+                    color: '#FFF',
+                    confirmButtonColor: '#B9924B',
+                    confirmButtonText: 'Call Now'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = 'tel:8577772125';
+                    }
+                });
+            }
+        }));
+
         updateTripFields();
-        const extras = [{ id: 'stopover', price: 25 },{ id: 'pets', price: 20 },{ id: 'infantSeat', price: 15 },{ id: 'frontSeat', price: 15 },{ id: 'boosterSeat', price: 12 }];
-        extras.forEach(item => { let el = document.getElementById(item.id); if(el) el.addEventListener("change", () => { let total = (parseInt(el.value)||0) * item.price; document.getElementById(item.id + "Display").innerText = "$" + total; let grand = extras.reduce((sum, it) => sum + ((parseInt(document.getElementById(it.id)?.value)||0) * it.price), 0); document.getElementById("extrasTotalInput").value = grand; }); });
+
+        // Extras calculation
+        const extras = [
+            { id: 'stopover', price: {{ $settings->stopover_fee ?? 0 }} },
+            { id: 'pets', price: {{ $settings->pet_fee ?? $settings->stopover_fee ?? 0 }} },
+            { id: 'infantSeat', price: {{ $settings->child_seat_fee ?? 0 }} },
+            { id: 'frontSeat', price: {{ $settings->regular_Seat_rules ?? 0 }} },
+            { id: 'boosterSeat', price: {{ $settings->booster_seat_fee ?? 0 }} }
+        ];
+
+        extras.forEach(item => {
+            let el = document.getElementById(item.id);
+            if(el) el.addEventListener("change", () => {
+                let total = (parseInt(el.value)||0) * item.price;
+                document.getElementById(item.id + "Display").innerText = "$" + total;
+                let grand = extras.reduce((sum, it) => sum + ((parseInt(document.getElementById(it.id)?.value)||0) * it.price), 0);
+                document.getElementById("extrasTotalInput").value = grand;
+            });
+        });
+
         $("#toggleExtrasBtn").on("click", function() { $("#extrasSection").slideToggle(); $(this).find(".fa-chevron-down").toggleClass("fa-chevron-up"); });
-        $("#childSeatsTrigger").on("change", function(){ if($(this).val() !== "0" && $("#extrasSection").is(":hidden")) { $("#extrasSection").slideDown(); $("#toggleExtrasBtn .fa-chevron-down").addClass("fa-chevron-up"); } });
-        $("#reservationForm").on("submit", function(e){ e.preventDefault(); const tripType = document.querySelector('input[name="tripType"]:checked')?.value; if(tripType === 'doorToDoor') { Swal.fire({ icon: 'info', title: 'Concierge Booking', text: 'Please call 857-777-2125', background: '#0F171D', color: '#FFF', confirmButtonColor: '#B9924B' }); return; } let missing = !$("#date").val() || !$("#time").val() || !$("#adults").val() || !$("#luggage").val(); let fromVal = document.querySelector('[name="from_airport"]')?.value || document.querySelector('[name="from_address"]')?.value; let toVal = document.querySelector('[name="to_airport"]')?.value || document.querySelector('[name="to_address"]')?.value; if(missing || !fromVal || !toVal) return Swal.fire({ icon: 'warning', title: 'Incomplete', text: 'Fill all required fields', background: '#0F171D', color: '#FFF', confirmButtonColor: '#B9924B' }); Swal.fire({ title: 'Processing', text: 'Redirecting to secure portal', icon: 'success', timer: 1200, showConfirmButton: false, background: '#0F171D', didClose: () => { document.getElementById("reservationForm").submit(); } }); });
+
+        $("#childSeatsTrigger").on("change", function(){
+            if($(this).val() !== "0" && $("#extrasSection").is(":hidden")) {
+                $("#extrasSection").slideDown();
+                $("#toggleExtrasBtn .fa-chevron-down").addClass("fa-chevron-up");
+            }
+        });
+
+        // Form submission
+        $("#reservationForm").on("submit", function(e){
+            e.preventDefault();
+
+            const tripType = document.querySelector('input[name="tripType"]:checked')?.value;
+
+            if(tripType === 'doorToDoor') {
+                Swal.fire({
+                    icon: 'info',
+                    title: '🚖 Door-to-Door Service',
+                    text: 'Please call our concierge at 857-777-2125 for door-to-door booking',
+                    background: '#0F171D',
+                    color: '#FFF',
+                    confirmButtonColor: '#B9924B',
+                    confirmButtonText: 'Call Now'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = 'tel:8577772125';
+                    }
+                });
+                return;
+            }
+
+            let missing = !$("#date").val() || !$("#time").val() || !$("#adults").val() || !$("#luggage").val();
+            let fromVal = document.querySelector('[name="from_airport"]')?.value || document.querySelector('[name="from_address"]')?.value;
+            let toVal = document.querySelector('[name="to_airport"]')?.value || document.querySelector('[name="to_address"]')?.value;
+
+            if(missing || !fromVal || !toVal) {
+                return Swal.fire({ icon: 'warning', title: 'Incomplete', text: 'Fill all required fields', background: '#0F171D', color: '#FFF', confirmButtonColor: '#B9924B' });
+            }
+
+            // Child seats validation
+            const requiredSeats = parseInt($("#childSeatsTrigger").val()) || 0;
+            const vInfant = parseInt($("#infantSeat").val()) || 0;
+            const vFront = parseInt($("#frontSeat").val()) || 0;
+            const vBooster = parseInt($("#boosterSeat").val()) || 0;
+
+            if(requiredSeats > 0 && requiredSeats !== (vInfant + vFront + vBooster)) {
+                Swal.fire({ icon: 'error', title: 'Seat Mismatch', text: `Please select ${requiredSeats} child seat(s)`, background: '#0F171D', color: '#FFF', confirmButtonColor: '#B9924B' });
+                return;
+            }
+
+            Swal.fire({ title: 'Processing', text: 'Redirecting to secure portal', icon: 'success', timer: 1200, showConfirmButton: false, background: '#0F171D', didClose: () => { document.getElementById("reservationForm").submit(); } });
+        });
+
         $(document).on('change keyup', '#fromAddress, #toAddress, select[name="from_airport"], select[name="to_airport"]', () => setTimeout(updateMapRoute, 400));
     }
 </script>
-</body>
-</html>
+

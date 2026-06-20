@@ -34,11 +34,11 @@
                     <li class="nav-item">
                         <a href="{{ route('reservation') }}" class="nav-link {{ request()->routeIs('reservation') ? 'active' : '' }}">Reservation</a>
                     </li>
-                    <li class="nav-item"><a href="#" class="nav-link">Minivan</a></li>
+                    <li class="nav-item"><a href="{{ route('minivan') }}" class="nav-link {{ request()->routeIs('minivan') ? 'active' : '' }}" class="nav-link">Minivan</a></li>
                     <li class="nav-item"><a href="#" class="nav-link">Long Distance</a></li>
                     <li class="nav-item"><a href="#" class="nav-link">Child Seat</a></li>
-                    <li class="nav-item"><a href="#" class="nav-link">Services</a></li>
-                    <li class="nav-item"><a href="#" class="nav-link">Blogs</a></li>
+                    <li class="nav-item"><a href="{{ route('services') }}" class="nav-link {{ request()->routeIs('services') ? 'active' : '' }}" class="nav-link">Services</a></li>
+                    <li class="nav-item"><a href="{{ route('blogs') }}" class="nav-link {{ request()->routeIs('blogs') ? 'active' : '' }}" class="nav-link">Blogs</a></li>
                     <li class="nav-item">
                         <a href="{{ route('contact') }}" class="nav-link {{ request()->routeIs('contact') ? 'active' : '' }}">Contact</a>
                     </li>

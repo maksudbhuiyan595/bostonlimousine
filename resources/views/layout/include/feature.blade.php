@@ -12,6 +12,7 @@
             padding: 80px 0;
             overflow: hidden;
             font-family: 'Poppins', sans-serif;
+            
         }
 
         /* --- ANIMATIONS --- */
@@ -106,7 +107,7 @@
             <h2 style="color: var(--brand-gold); font-weight: 800; font-size: 3rem; margin-bottom: 15px;">Our Specialized Features</h2>
             <div style="width: 60px; height: 3px; background: var(--brand-gold); margin: 0 auto 20px auto;"></div>
             <p style="color: #666; max-width: 700px; margin: 0 auto; font-size: 1.05rem; line-height: 1.6;">
-                Enjoy unmatched convenience, safety, and customization with Boston Airport Transfer. We ensure seamless travel solutions tailored to your needs.
+                Enjoy unmatched convenience, safety, and customization with Logan Airport Transfer. We ensure seamless travel solutions tailored to your needs.
             </p>
         </div>
 
