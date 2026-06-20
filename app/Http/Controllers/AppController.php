@@ -6,6 +6,7 @@ use App\Models\Airport;
 use App\Models\BlogPost;
 use App\Models\City;
 use App\Models\ExtraCharge;
+use App\Models\MainPage;
 use App\Models\Surcharge;
 use App\Models\Vehicle;
 use App\Settings\GeneralSettings;
@@ -394,9 +395,12 @@ class AppController extends Controller
     {
         return view("layout.page.pickuplocation");
     }
-    public function reservation(Request $request)
+   public function reservation(Request $request)
     {
-        return view("layout.page.reservation");
+        $main_page = MainPage::where('slug', 'reservation')
+                            ->where('is_active', true)
+                            ->first();
+        return view("layout.page.reservation", compact('main_page'));
     }
     public function services(Request $request)
     {
