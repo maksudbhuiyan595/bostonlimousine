@@ -944,3 +944,4 @@
         $(document).on('change keyup', '#fromAddress, #toAddress, select[name="from_airport"], select[name="to_airport"]', () => setTimeout(updateMapRoute, 400));
     });
 </script>
+
