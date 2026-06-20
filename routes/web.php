@@ -16,11 +16,11 @@ Route::controller(AppController::class)->group(function () {
     Route::get('/airports', 'airport')->name('airports');
     Route::get('/capacity-luggage', 'capacityLuggage')->name('luggage.capacity');
     Route::get('about/', 'about')->name('about');
-    Route::get('/taxi-with-child-car-seats', 'childSeat')->name('child.seat');
+    Route::get('/child-seat', 'childSeat')->name('child.seat');
     Route::get('/pickup-location-12', 'pickupLocation')->name('pickup.location');
     Route::get('/reservation', 'reservation')->name('reservation');
     Route::get('/minivan', 'minivan')->name('minivan');
-    Route::get('/long-distance-car-service-33', 'longdistance')->name('long.distance');
+    Route::get('/long-distance', 'longdistance')->name('long.distance');
     Route::get('/services', 'services')->name('services');
     Route::get('/contact-us', 'contact')->name('contact');
     Route::get('/blogs', 'blogs')->name('blogs');
