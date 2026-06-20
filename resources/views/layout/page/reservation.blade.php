@@ -1,72 +1,71 @@
 @extends('layout.app')
 
-{{-- ডাটাবেজে title থাকলে সেটা দেখাবে, না থাকলে ডিফল্ট টাইটেল বসবে --}}
 @section('title', $main_page->title ?? "Reserve Boston Taxi to Logan Airport, CT, RI, NH, VT, NY")
-
-{{-- meta_description এর ক্ষেত্রেও একই সেফটি মেথড --}}
-@section('meta_description', $main_page->meta_description ?? "Book Boston taxi to Logan Airport, New Haven, Stamford, Portsmouth & beyond! Safe, 24/7 cabs with child seats, minivans. Instant booking, call 617-230-6362.")
-
-@section('schema')
-    @php
-        $schemaData = [
-            "@context" => "https://schema.org",
-            "@type" => "WebPage",
-            // ডাটাবেজ থেকে dynamic title অথবা fallback ডিফল্ট title
-            "name" => $main_page->title ?? "Reserve Boston Taxi to Logan Airport, CT, RI, NH, VT, NY",
-            "url" => url()->current() .'/',
-            // ডাটাবেজে ইমেজ থাকলে সেটার অ্যাসেট পাথ, না থাকলে ডিফল্ট ইমেজ
-            "image" => isset($main_page->cover_image) ? asset($main_page->cover_image) : asset('images/cab6.png'),
-            // dynamic description অথবা fallback ডিফল্ট description
-            "description" => $main_page->meta_description ?? "Book Boston taxi to Logan Airport, New Haven, Stamford, Portsmouth & beyond! Safe, 24/7 cabs with child seats, minivans. Instant booking, call 617-230-6362.",
-            "telephone" => "617-230-6362",
-            "priceRange" => "$$",
-            "provider" => [
-                "@type" => "LocalBusiness",
-                "name" => "Boston Express Cab",
-                "address" => [
-                    "@type" => "PostalAddress",
-                    "addressLocality" => "Boston",
-                    "addressRegion" => "MA",
-                    "addressCountry" => "US"
-                ]
-            ],
-            "areaServed" => [
-                ["@type" => "City", "name" => "Boston"],
-                ["@type" => "Airport", "name" => "Logan International Airport"],
-                ["@type" => "City", "name" => "Cambridge"]
-            ],
-            "author" => [
-                "@type" => "Person",
-                "name" => "Omar Khan"
-            ]
-        ];
-    @endphp
-<script type="application/ld+json">
-    {!! json_encode($schemaData, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) !!}
-</script>
-@endsection
+@section('meta_description', $main_page->meta_description ?? "Book Boston taxi to Logan Airport...")
 
 @section('content')
-    {{-- Hero Banner: ডাটাবেজে ডাটা থাকলে ডাইনামিক দেখাবে, না থাকলে ডিফল্ট স্টাইল বা কন্টেন্ট লোড হবে --}}
+    {{-- 1. Simple Hero Content (Form er 1st block onushare) --}}
     @if($main_page && ($main_page->hero_heading || $main_page->hero_subheading))
         <div class="hero-banner" style="background-image: url('{{ $main_page->cover_image ? asset($main_page->cover_image) : asset('images/cab6.png') }}')">
-            <div class="container">
+            <div class="container text-center">
                 <h1>{{ $main_page->hero_heading }}</h1>
                 <p>{{ $main_page->hero_subheading }}</p>
             </div>
         </div>
     @endif
 
-    {{-- আপনার আগের ফর্ম এবং রেটিং সেকশন --}}
+    {{-- Old static includes --}}
     @include('layout.include.booking')
     @include('layout.include.rating')
 
-    {{-- Dynamic Content Blocks (JSON Data): ডাটাবেজে ব্লক থাকলে সেগুলো লুপ আকারে আসবে --}}
+    {{-- 2. Advanced Dynamic Sections (Form er "Page Blocks" onushare loop) --}}
     @if($main_page && $main_page->content_blocks)
         @foreach($main_page->content_blocks as $block)
-            @if(view()->exists("layout.blocks." . $block['type']))
-                @include("layout.blocks." . $block['type'], ['data' => $block])
+
+            {{-- BLOCK A: Rich Text Body --}}
+            @if($block['type'] === 'rich_text' || isset($block['body']))
+                <section class="content-rich-text my-5">
+                    <div class="container">
+                        {!! $block['body'] !!}
+                    </div>
+                </section>
             @endif
+
+            {{-- BLOCK B: Call to Action Banner --}}
+            @if($block['type'] === 'cta' || isset($block['button_text']))
+                <section class="content-cta text-center py-5 bg-dark text-white">
+                    <div class="container">
+                        <h2>{{ $block['title'] ?? 'Ready to Ride?' }}</h2>
+                        <a href="{{ $block['button_url'] ?? '#' }}" class="btn btn-warning mt-3">
+                            {{ $block['button_text'] ?? 'Book Now' }}
+                        </a>
+                    </div>
+                </section>
+            @endif
+
+            {{-- BLOCK C: Image Gallery (Jamon form e car image dewa) --}}
+            @if($block['type'] === 'gallery' || isset($block['images']))
+                <section class="content-gallery my-5">
+                    <div class="container text-center">
+                        <div class="row justify-content-center">
+                            {{-- Multiple images hole loop hobe, single hole direct image asset --}}
+                            @if(is_array($block['images']))
+                                @foreach($block['images'] as $img)
+                                    <div class="col-md-6">
+                                        <img src="{{ asset($img) }}" class="img-fluid rounded shadow" alt="Fleet Image">
+                                    </div>
+                                @endforeach
+                            @else
+                                <div class="col-md-8">
+                                    <img src="{{ asset($block['images']) }}" class="img-fluid rounded shadow" alt="Fleet Image">
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                </section>
+            @endif
+
         @endforeach
     @endif
+
 @endsection

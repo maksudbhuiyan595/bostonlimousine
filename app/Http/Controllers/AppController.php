@@ -383,13 +383,19 @@ class AppController extends Controller
     {
         return view("layout.page.termConditions");
     }
-     public function minivan(Request $request)
+    public function minivan(Request $request)
     {
-        return view("layout.page.minivan");
+        $main_page = MainPage::where('slug', 'minivan')
+                            ->where('is_active', true)
+                            ->first();
+        return view("layout.page.minivan", compact('main_page'));
     }
     public function longdistance(Request $request)
     {
-        return view("layout.page.longdistance");
+        $main_page = MainPage::where('slug', 'long-distance')
+                            ->where('is_active', true)
+                            ->first();
+        return view("layout.page.longdistance",compact('main_page'));
     }
     public function pickupLocation(Request $request)
     {
@@ -405,11 +411,17 @@ class AppController extends Controller
     public function services(Request $request)
     {
          $cities = City::where('is_featured',true)->orderBy('name', 'asc')->paginate(30);
-        return view("layout.page.services",compact('cities'));
+          $main_page = MainPage::where('slug', 'service')
+                            ->where('is_active', true)
+                            ->first();
+        return view("layout.page.services",compact('cities','main_page'));
     }
     public function childSeat(Request $request)
     {
-        return view("layout.page.childseat");
+        $main_page = MainPage::where('slug', 'child-seat')
+                            ->where('is_active', true)
+                            ->first();
+        return view("layout.page.childseat",compact('main_page'));
     }
       public function confirmBooking(Request $request)
     {

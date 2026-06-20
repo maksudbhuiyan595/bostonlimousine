@@ -53,26 +53,50 @@
 
 @section('content')
     @php
-        // Check if page exists
         if (!isset($page) || !$page) {
             abort(404, 'Page not found');
         }
 
-        // Prepare cover image
         $coverImage = $page->cover_image && Storage::disk('public')->exists($page->cover_image)
             ? asset('storage/' . $page->cover_image)
             : asset('images/home3.jpeg');
 
-        // Prepare tags
         $tags = [];
         if ($page->tags) {
             $tags = is_array($page->tags) ? $page->tags : explode(',', $page->tags);
         }
 
-        // Prepare FAQ items
         $faqItems = [];
         if (!empty($page->faqs)) {
             $faqItems = is_string($page->faqs) ? json_decode($page->faqs, true) : $page->faqs;
+        }
+
+        // Clean and prepare FAQ Schema safely using PHP to avoid broken JSON string generations
+        $faqSchemaData = null;
+        if (!empty($faqItems) && count($faqItems) > 0) {
+            $mainEntity = [];
+            foreach ($faqItems as $faq) {
+                $question = $faq['question'] ?? ($faq['title'] ?? '');
+                $answer = $faq['answer'] ?? ($faq['description'] ?? '');
+
+                if (!empty($question)) {
+                    $mainEntity[] = [
+                        "@type" => "Question",
+                        "name" => $question,
+                        "acceptedAnswer" => [
+                            "@type" => "Answer",
+                            "text" => strip_tags($answer)
+                        ]
+                    ];
+                }
+            }
+            if (!empty($mainEntity)) {
+                $faqSchemaData = [
+                    "@context" => "https://schema.org",
+                    "@type" => "FAQPage",
+                    "mainEntity" => $mainEntity
+                ];
+            }
         }
     @endphp
 
@@ -98,7 +122,6 @@
             opacity: 0.6;
         }
 
-        /* Text Overlay */
         .cover-text-overlay {
             position: absolute;
             z-index: 2;
@@ -116,7 +139,7 @@
             margin: 0;
         }
 
-        /* Breadcrumb Styles */
+        /* --- BREADCRUMB --- */
         .breadcrumb-wrapper {
             background-color: #f8f9fa;
             padding: 12px 0;
@@ -137,7 +160,7 @@
             text-decoration: underline;
         }
 
-        /* Content Styles */
+        /* --- MAIN WRAPPER --- */
         .page-content-wrapper {
             padding: 60px 0;
             background-color: #fff;
@@ -192,15 +215,13 @@
             text-decoration: underline;
         }
 
-        /* Table Styles */
         .page-content table {
             width: 100%;
             border-collapse: collapse;
             margin: 20px 0;
         }
 
-        .page-content th,
-        .page-content td {
+        .page-content th, .page-content td {
             border: 1px solid #e2e8f0;
             padding: 12px;
             text-align: left;
@@ -211,7 +232,7 @@
             font-weight: 600;
         }
 
-        /* Tags Styles */
+        /* --- TAGS --- */
         .tags-wrapper {
             margin-top: 40px;
             padding-top: 30px;
@@ -243,7 +264,7 @@
             text-decoration: none;
         }
 
-        /* FAQ Styles */
+        /* --- FAQ --- */
         .faq-section {
             margin-top: 60px;
         }
@@ -264,7 +285,7 @@
             border-color: rgba(45, 156, 219, 0.25);
         }
 
-        /* Share Section */
+        /* --- SHARE --- */
         .share-section {
             margin-top: 40px;
             padding-top: 20px;
@@ -297,65 +318,26 @@
             transform: translateY(-2px);
         }
 
-        /* Mobile Responsive */
+        /* --- RESPONSIVE MEDIA QUERIES --- */
         @media (max-width: 768px) {
-            .page-cover-wrapper {
-                height: 250px;
-            }
-
-            .responsive-cover-img {
-                object-fit: cover;
-            }
-
-            .cover-text-overlay h1 {
-                font-size: 1.8rem;
-                font-weight: 700;
-            }
-
-            .page-content-wrapper {
-                padding: 30px 0;
-            }
-
-            .page-content {
-                font-size: 1rem;
-                line-height: 1.6;
-            }
-
-            .faq-section h3 {
-                font-size: 1.5rem;
-            }
+            .page-cover-wrapper { height: 250px; }
+            .cover-text-overlay h1 { font-size: 1.8rem; font-weight: 700; }
+            .page-content-wrapper { padding: 30px 0; }
+            .page-content { font-size: 1rem; line-height: 1.6; }
+            .faq-section h3 { font-size: 1.5rem; }
         }
 
-        /* Tablet Responsive */
         @media (min-width: 769px) and (max-width: 1024px) {
-            .page-cover-wrapper {
-                height: 350px;
-            }
-
-            .cover-text-overlay h1 {
-                font-size: 2.5rem;
-            }
+            .page-cover-wrapper { height: 350px; }
+            .cover-text-overlay h1 { font-size: 2.5rem; }
         }
 
-        /* Print Styles */
         @media print {
-            .booking-section-wrapper,
-            .breadcrumb-wrapper,
-            .tags-wrapper,
-            .faq-section,
-            .share-section {
+            .booking-section-wrapper, .breadcrumb-wrapper, .tags-wrapper, .faq-section, .share-section {
                 display: none;
             }
-
-            .page-cover-wrapper {
-                height: auto;
-                background: none;
-            }
-
-            .cover-text-overlay h1 {
-                color: #000;
-                text-shadow: none;
-            }
+            .page-cover-wrapper { height: auto; background: none; }
+            .cover-text-overlay h1 { color: #000; text-shadow: none; }
         }
     </style>
 
@@ -364,12 +346,8 @@
         <div class="container">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item">
-                        <a href="{{ url('/') }}">Home</a>
-                    </li>
-                    <li class="breadcrumb-item active" aria-current="page">
-                        {{ $page->route_name }}
-                    </li>
+                    <li class="breadcrumb-item"><a href="{{ url('/') }}">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ $page->route_name }}</li>
                 </ol>
             </nav>
         </div>
@@ -377,12 +355,7 @@
 
     {{-- COVER IMAGE SECTION --}}
     <div class="page-cover-wrapper">
-        <img
-            src="{{ $coverImage }}"
-            alt="{{ $page->meta_title ?? $page->route_name }} - Boston Express Cab"
-            class="responsive-cover-img"
-            loading="eager"
-        >
+        <img src="{{ $coverImage }}" alt="{{ $page->meta_title ?? $page->route_name }} - Boston Express Cab" class="responsive-cover-img" loading="eager">
         <div class="cover-text-overlay">
             <h1>{{ $page->route_name }}</h1>
         </div>
@@ -390,7 +363,8 @@
 
     {{-- BOOKING SECTION --}}
     <section class="booking-section-wrapper">
-        @include('frontend.layouts.includes.booking')
+           @include('layout.include.booking')
+            @include('layout.include.rating')
     </section>
 
     {{-- MAIN CONTENT SECTION --}}
@@ -431,37 +405,24 @@
                                         $currentUrl = urlencode(url()->current());
                                         $pageTitle = urlencode($page->meta_title ?? $page->route_name);
                                     @endphp
-                                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ $currentUrl }}"
-                                       target="_blank" rel="noopener noreferrer" class="share-link" aria-label="Share on Facebook">
-                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                                            <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
-                                        </svg>
+                                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ $currentUrl }}" target="_blank" rel="noopener noreferrer" class="share-link" aria-label="Share on Facebook">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
                                     </a>
-                                    <a href="https://twitter.com/intent/tweet?url={{ $currentUrl }}&text={{ $pageTitle }}"
-                                       target="_blank" rel="noopener noreferrer" class="share-link" aria-label="Share on Twitter">
-                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                                            <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/>
-                                        </svg>
+                                    <a href="https://twitter.com/intent/tweet?url={{ $currentUrl }}&text={{ $pageTitle }}" target="_blank" rel="noopener noreferrer" class="share-link" aria-label="Share on Twitter">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg>
                                     </a>
-                                    <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ $currentUrl }}&title={{ $pageTitle }}"
-                                       target="_blank" rel="noopener noreferrer" class="share-link" aria-label="Share on LinkedIn">
-                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                                            <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
-                                            <rect x="2" y="9" width="4" height="12"/>
-                                            <circle cx="4" cy="4" r="2"/>
-                                        </svg>
+                                    <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ $currentUrl }}&title={{ $pageTitle }}" target="_blank" rel="noopener noreferrer" class="share-link" aria-label="Share on LinkedIn">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
                                     </a>
-                                    <a href="mailto:?subject={{ $pageTitle }}&body={{ $currentUrl }}"
-                                       class="share-link" aria-label="Share via Email">
-                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                                            <polygon points="22,6 12,13 2,6"/>
-                                        </svg>
+                                    <a href="mailto:?subject={{ $pageTitle }}&body={{ $currentUrl }}" class="share-link" aria-label="Share via Email">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polygon points="22,6 12,13 2,6"/></svg>
                                     </a>
                                 </div>
                             </div>
                             <div class="mt-3 mt-sm-0">
-                                <small class="text-muted">Last updated: {{ $page->updated_at ? $page->updated_at->format('F j, Y') : date('F j, Y') }}</small>
+                                <small class="text-muted">
+                                    Last updated: {{ ($page->updated_at instanceof \Carbon\Carbon) ? $page->updated_at->format('F j, Y') : date('F j, Y', strtotime($page->updated_at ?? 'now')) }}
+                                </small>
                             </div>
                         </div>
                     </div>
@@ -475,17 +436,11 @@
                                     @if(!empty($faq['question']) || !empty($faq['title']))
                                         <div class="accordion-item">
                                             <h2 class="accordion-header">
-                                                <button class="accordion-button {{ $loop->first ? '' : 'collapsed' }}"
-                                                        type="button"
-                                                        data-bs-toggle="collapse"
-                                                        data-bs-target="#faqCollapse{{ $index }}"
-                                                        style="font-weight: 600;">
+                                                <button class="accordion-button {{ $loop->first ? '' : 'collapsed' }}" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapse{{ $index }}" style="font-weight: 600;">
                                                     {{ $faq['question'] ?? ($faq['title'] ?? 'Question') }}
                                                 </button>
                                             </h2>
-                                            <div id="faqCollapse{{ $index }}"
-                                                 class="accordion-collapse collapse {{ $loop->first ? 'show' : '' }}"
-                                                 data-bs-parent="#faqAccordion">
+                                            <div id="faqCollapse{{ $index }}" class="accordion-collapse collapse {{ $loop->first ? 'show' : '' }}" data-bs-parent="#faqAccordion">
                                                 <div class="accordion-body text-secondary">
                                                     {!! $faq['answer'] ?? ($faq['description'] ?? '<p>No answer provided.</p>') !!}
                                                 </div>
@@ -496,27 +451,12 @@
                             </div>
                         </div>
 
-                        {{-- SCHEMA FOR FAQ (if FAQ exists) --}}
-                        <script type="application/ld+json">
-                            {
-                                "@context": "https://schema.org",
-                                "@type": "FAQPage",
-                                "mainEntity": [
-                                    @foreach($faqItems as $index => $faq)
-                                        @if(!empty($faq['question']) || !empty($faq['title']))
-                                            {
-                                                "@type": "Question",
-                                                "name": "{{ addslashes($faq['question'] ?? ($faq['title'] ?? 'Question')) }}",
-                                                "acceptedAnswer": {
-                                                    "@type": "Answer",
-                                                    "text": "{{ addslashes(strip_tags($faq['answer'] ?? ($faq['description'] ?? 'No answer provided.'))) }}"
-                                                }
-                                            }@if(!$loop->last),@endif
-                                        @endif
-                                    @endforeach
-                                ]
-                            }
-                        </script>
+                        {{-- SCHEMA FOR FAQ (Safely injected out of loop logic) --}}
+                        @if(!empty($faqSchemaData))
+                            <script type="application/ld+json">
+                                {!! json_encode($faqSchemaData, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) !!}
+                            </script>
+                        @endif
                     @endif
                 </div>
             </div>
