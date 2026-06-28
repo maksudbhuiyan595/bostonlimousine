@@ -2,17 +2,26 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\BookingConfirmationMail;
+use App\Mail\PaymentFailedMail;
 use App\Models\Airport;
 use App\Models\BlogPost;
+use App\Models\Booking;
 use App\Models\City;
 use App\Models\ExtraCharge;
 use App\Models\MainPage;
 use App\Models\Surcharge;
 use App\Models\Vehicle;
 use App\Settings\GeneralSettings;
-use Carbon\Carbon;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use Stripe\Stripe;
+use Stripe\PaymentIntent;
+use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+
 
 class AppController extends Controller
 {
@@ -50,7 +59,6 @@ class AppController extends Controller
     }
     public function step2(Request $request)
     {
-        // dd($request->all());
         $settings = app(GeneralSettings::class);
         $now = Carbon::now();
 
@@ -403,7 +411,7 @@ class AppController extends Controller
     }
    public function reservation(Request $request)
     {
-        $main_page = MainPage::where('slug', 'reservation')
+         $main_page = MainPage::where('slug', 'reservation')
                             ->where('is_active', true)
                             ->first();
         return view("layout.page.reservation", compact('main_page'));
@@ -451,7 +459,7 @@ class AppController extends Controller
                 $lastNumber = (int) $matches[1];
             }
 
-            $bookingNo = 'BEC-' . str_pad($lastNumber + 1, 4, '0', STR_PAD_LEFT);
+            $bookingNo = 'LAT-' . str_pad($lastNumber + 1, 4, '0', STR_PAD_LEFT);
 
             $booking = new Booking();
             $booking->booking_no = $bookingNo;
@@ -596,11 +604,15 @@ class AppController extends Controller
                 Log::error('Mail Error: ' . $e->getMessage());
             }
 
-            return redirect()->route('home')->with('booking_success', [
-                    'title' => 'Booking Confirmed!',
-                    'message' => "Your booking #{$booking->booking_no} has been successfully placed. A confirmation email has been sent.",
-                    'booking_no' => $booking->booking_no
-                ]);
+            // return redirect()->route('home')->with('booking_success', [
+            //         'title' => 'Booking Confirmed!',
+            //         'message' => "Your booking #{$booking->booking_no} has been successfully placed. A confirmation email has been sent.",
+            //         'booking_no' => $booking->booking_no
+            //     ]);
+            return redirect()->route('home')->with('notify', [
+                'type' => 'success',
+                'message' => "Booking Confirmed! Your booking #{$booking->booking_no} has been successfully placed."
+            ]);
 
         } catch (\Throwable $e) {
             // ==================================================
@@ -624,9 +636,9 @@ class AppController extends Controller
                 Mail::to(config('mail.from.address'))->send(new PaymentFailedMail($failData));
             } catch (\Exception $ex) {}
 
-            return back()->with('notify', [
+           return back()->with('notify', [
                 'type' => 'error',
-                'message' => 'Payment Failed: '. 'If charged, it will be refunded automatically.'
+                'message' => 'Payment Failed. If charged, it will be refunded automatically.'
             ])->withInput();
         }
     }

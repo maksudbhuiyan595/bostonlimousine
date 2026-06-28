@@ -629,8 +629,8 @@
                         <p>Instant Reservation EMAIL Confirmation</p>
                     </div>
                     <div class="booking-inner">
-                        <form id="reservationForm" action="{{ route('step2') }}" method="POST" novalidate>
-                            @csrf
+                        <form id="reservationForm" action="{{ route('step2') }}" method="GET" novalidate>
+                            {{-- @csrf --}}
                             <input type="hidden" name="extras_total" id="extrasTotalInput" value="0">
 
                             <!-- Date & Time row compact -->
