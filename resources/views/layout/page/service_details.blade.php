@@ -1,11 +1,11 @@
 @extends('layout.app')
 
 {{-- 1. SEO SECTION --}}
-@section('title', $page->meta_title ? e($page->meta_title) : (e($page->route_name) . ' | Boston Express Cab'))
-@section('meta_description', e($page->meta_description ?? ''))
+@section('title', $page->meta_title ? e($page->meta_title) : (e($page->route_name) . ' | Logan Airport Transfer'))
+@section('meta_description', e($page->meta_description ?? 'Affordable and reliable airport car service by Logan Airport Transfer.'))
 
 @section('meta_keywords')
-    <meta name="keywords" content="{{ is_array($page->tags) ? implode(', ', array_map('e', $page->tags)) : e($page->tags ?? 'Boston Express Cab, taxi, airport transfer') }}">
+    <meta name="keywords" content="{{ is_array($page->tags) ? implode(', ', array_map('e', $page->tags)) : e($page->tags ?? 'Logan Airport Transfer, airport taxi, car service Boston, Woburn taxi') }}">
     <meta property="og:image" content="{{ $page->cover_image ? asset('storage/' . $page->cover_image) : asset('images/home3.jpeg') }}">
 @endsection
 
@@ -14,7 +14,7 @@
     @php
         $coverImageUrl = $page->cover_image && Storage::disk('public')->exists($page->cover_image)
             ? asset('storage/' . $page->cover_image)
-            : asset('images/car-2.png');
+            : asset('images/bg.jpg');
 
         $schemaData = [
             "@context" => "https://schema.org",
@@ -22,27 +22,33 @@
             "name" => $page->meta_title ?? $page->route_name,
             "url" => url()->current(),
             "image" => $coverImageUrl,
-            "description" => $page->meta_description ?? '',
-            "telephone" => "617-230-6362",
+            "description" => $page->meta_description ?? 'Logan Airport Transfer service provider.',
+            "telephone" => "+1-857-777-2125",
             "priceRange" => "$$",
             "provider" => [
                 "@type" => "LocalBusiness",
-                "name" => "Boston Express Cab",
+                "name" => "Logan Airport Transfer",
+                "image" => $coverImageUrl,
+                "telephone" => "+1-857-777-2125",
+                "email" => "loganairporttransfer@gmail.com",
                 "address" => [
                     "@type" => "PostalAddress",
-                    "addressLocality" => "Boston",
+                    "streetAddress" => "12 Highland Ave",
+                    "addressLocality" => "Woburn",
                     "addressRegion" => "MA",
+                    "postalCode" => "01801",
                     "addressCountry" => "US"
                 ]
             ],
             "areaServed" => [
+                ["@type" => "City", "name" => "Woburn"],
                 ["@type" => "City", "name" => "Boston"],
                 ["@type" => "Airport", "name" => "Logan International Airport"],
                 ["@type" => "City", "name" => "Cambridge"]
             ],
             "author" => [
-                "@type" => "Person",
-                "name" => "Omar Khan"
+                "@type" => "Organization",
+                "name" => "Logan Airport Transfer"
             ]
         ];
     @endphp
@@ -59,7 +65,7 @@
 
         $coverImage = $page->cover_image && Storage::disk('public')->exists($page->cover_image)
             ? asset('storage/' . $page->cover_image)
-            : asset('images/home3.jpeg');
+            : asset('images/bg.jpg');
 
         $tags = [];
         if ($page->tags) {
@@ -317,6 +323,9 @@
             color: #fff;
             transform: translateY(-2px);
         }
+        .booking-section-wrapper{
+            margin-top: -80px !important;
+        }
 
         /* --- RESPONSIVE MEDIA QUERIES --- */
         @media (max-width: 768px) {
@@ -355,7 +364,7 @@
 
     {{-- COVER IMAGE SECTION --}}
     <div class="page-cover-wrapper">
-        <img src="{{ $coverImage }}" alt="{{ $page->meta_title ?? $page->route_name }} - Boston Express Cab" class="responsive-cover-img" loading="eager">
+        <img src="{{ $coverImage }}" alt="{{ $page->meta_title ?? $page->route_name }} - Logan Airport Transfer" class="responsive-cover-img" loading="eager">
         <div class="cover-text-overlay">
             <h1>{{ $page->route_name }}</h1>
         </div>

@@ -1,22 +1,69 @@
 @extends('layout.app')
 
 {{-- SEO Meta Tags --}}
-@section('title', $blog->meta_title ?? ($blog->title . ' | Boston Car Service'))
+@section('title', $blog->meta_title ?? ($blog->title . ' | Logan Airport Transfer'))
 
 @section('meta')
     <meta name="description" content="{{ $blog->meta_description ?? Str::limit(strip_tags($blog->content), 160) }}">
 
     {{-- Tags Handling --}}
     @php
-        $keywords = is_array($blog->tags) ? implode(', ', $blog->tags) : ($blog->tags ?? 'blog, car service, Boston, airport transport');
+        $keywords = is_array($blog->tags) ? implode(', ', $blog->tags) : ($blog->tags ?? 'Logan Airport Transfer, airport taxi, car service Boston, Woburn taxi');
     @endphp
     <meta name="keywords" content="{{ $keywords }}">
+    <meta property="og:image" content="{{ $blog->thumbnail ? asset('storage/' . $blog->thumbnail) : asset('images/car-2.png') }}">
 @endsection
 
+{{-- 2. SCHEMA SECTION --}}
+@section('schema')
+    @php
+        $thumbnailUrl = $blog->thumbnail
+            ? asset('storage/' . $blog->thumbnail)
+            : asset('images/car-2.png');
 
+        $blogSchemaData = [
+            "@context" => "https://schema.org",
+            "@type" => "BlogPosting",
+            "headline" => $blog->title,
+            "image" => [
+                $thumbnailUrl
+            ],
+            "datePublished" => $blog->published_at ? \Carbon\Carbon::parse($blog->published_at)->toIso8601String() : $blog->created_at->toIso8601String(),
+            "dateModified" => $blog->updated_at ? \Carbon\Carbon::parse($blog->updated_at)->toIso8601String() : $blog->created_at->toIso8601String(),
+            "description" => $blog->meta_description ?? Str::limit(strip_tags($blog->content), 160),
+            "mainEntityOfPage" => [
+                "@type" => "WebPage",
+                "@id" => url()->current()
+            ],
+            "author" => [
+                "@type" => "Organization",
+                "name" => "Logan Airport Transfer",
+                "url" => url('/')
+            ],
+            "publisher" => [
+                "@type" => "LocalBusiness",
+                "name" => "Logan Airport Transfer",
+                "image" => asset('images/car-2.png'),
+                "telephone" => "+1-857-777-2125",
+                "email" => "loganairporttransfer@gmail.com",
+                "address" => [
+                    "@type" => "PostalAddress",
+                    "streetAddress" => "12 Highland Ave",
+                    "addressLocality" => "Woburn",
+                    "addressRegion" => "MA",
+                    "postalCode" => "01801",
+                    "addressCountry" => "US"
+                ]
+            ]
+        ];
+    @endphp
+    <script type="application/ld+json">
+        {!! json_encode($blogSchemaData, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) !!}
+    </script>
+@endsection
 
 @section('content')
-<div class="container py-5">
+<div class="container py-5 mt-5">
     <div class="row justify-content-center">
         <div class="col-md-9 col-lg-8">
 
@@ -24,7 +71,7 @@
             <div class="mb-2">
                 @php
                     $tagData = is_array($blog->tags) ? $blog->tags : explode(',', $blog->tags ?? '');
-                    $category = !empty($tagData[0]) ? trim($tagData[0]) : 'Travel Insights';
+                    $category = !empty($tagData[0]) ? trim($tagData[0]) : 'Travel Blog';
                 @endphp
                 <span class="text-primary fw-bold text-uppercase small">{{ $category }}</span>
             </div>
@@ -36,7 +83,7 @@
             <div class="text-muted mb-4 pb-3 border-bottom d-flex justify-content-between align-items-center">
                 <div class="d-flex align-items-center">
                     <i class="fas fa-car-side me-2"></i>
-                    <span>By Boston Car Service</span>
+                    <span>By Logan Airport Transfer</span>
                 </div>
                 <div class="d-flex align-items-center">
                     <i class="far fa-calendar-alt me-2"></i>

@@ -1,5 +1,8 @@
 @extends('layout.app')
+ <title>@yield('title', 'Logan Airport Transfer Services')</title>
 
+    <meta name="description"
+        content="@yield('meta_description', 'Logan Airport Transfer and Boston Airport Car Service. Professional chauffeurs, luxury vehicles, and 24/7 airport transportation.')">
 @section('content')
 
 <style>
