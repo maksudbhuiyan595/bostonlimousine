@@ -20,6 +20,7 @@
     @include('layout.include.booking')
     @include('layout.include.rating')
 
+    @dd($main_page)
     {{-- Dynamic Content Blocks --}}
     @if($main_page && !empty($main_page->content_blocks))
 
