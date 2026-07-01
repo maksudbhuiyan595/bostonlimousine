@@ -411,7 +411,7 @@ class AppController extends Controller
     }
    public function reservation(Request $request)
     {
-         $main_page = MainPage::where('slug', 'reservation')
+        $main_page = MainPage::where('slug', 'reservation')
                             ->where('is_active', true)
                             ->first();
         return view("layout.page.reservation", compact('main_page'));
