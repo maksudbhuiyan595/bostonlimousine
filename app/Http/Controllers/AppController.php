@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\AdminBookingConfirmationMail;
 use App\Mail\BookingConfirmationMail;
 use App\Mail\PaymentFailedMail;
 use App\Models\Airport;
@@ -17,6 +18,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Stripe\PaymentMethod;
 use Stripe\Stripe;
 use Stripe\PaymentIntent;
 use Illuminate\Http\Request;
@@ -104,7 +106,7 @@ class AppController extends Controller
             'to_address'   => 'nullable|string',
             'date'         => 'required|date',
             'time'         => 'required',
-            'adults'       => 'required|integer|min:1|max:14',
+            'adults'       => 'required|integer|min:1|max:12',
             'luggage'      => 'nullable|integer|min:0',
             'children'     => 'nullable|integer|min:0',
             'booster_seat' => 'nullable|integer|min:0',
@@ -195,7 +197,7 @@ class AppController extends Controller
            $tollFeeTotal = 0;
            $appliedExtraCharges = []; // ADD THIS
             // Multiplier Logic
-            $multiplier = $request->adults > 7 ? 2 : 1;
+            $multiplier = $request->adults > 6 ? 2 : 1;
 
             if ($originZip || $destinationZip) {
                 $extraCharges = ExtraCharge::where('is_active', true)->get();
@@ -431,215 +433,884 @@ class AppController extends Controller
                             ->first();
         return view("layout.page.childseat",compact('main_page'));
     }
-      public function confirmBooking(Request $request)
-    {
-        $request->validate([
-            'stripe_token'   => 'required|string',
-            'amount_charged' => 'required|numeric|min:1',
-            'passenger_name' => 'required|string',
-            'passenger_email'=> 'required|email',
-        ]);
-        $token         = $request->stripe_token;
-        $amountCharged = (float) $request->amount_charged;
-        $booking       = null;
+   public function confirmBooking(Request $request)
+{
+    $request->validate([
+        'stripe_token' => ['required', 'string'],
+        'amount_charged' => ['required', 'numeric', 'min:1'],
+        'passenger_name' => ['required', 'string', 'max:255'],
+        'passenger_email' => ['required', 'email', 'max:255'],
+        'phone_number' => ['nullable', 'string', 'max:50'],
+        'payment_method' => ['nullable', 'string', 'in:cash,deposit,card'],
+    ]);
 
-        // ======================================================
-        // STEP 2: SAVE DATA FIRST (DATABASE TRANSACTION)
-        // ======================================================
-        DB::beginTransaction();
-        try {
+    $paymentMethod = $request->input('payment_method', 'card');
 
-            $lastBooking = Booking::lockForUpdate()
-                ->orderBy('id', 'desc')
-                ->first();
+    /*
+    |--------------------------------------------------------------------------
+    | Calculate Fare
+    |--------------------------------------------------------------------------
+    */
 
-            $lastNumber = 0;
+    $fare = $this->calculateFare($request);
 
-            if ($lastBooking && preg_match('/BEC-(\d+)/', $lastBooking->booking_no, $matches)) {
-                $lastNumber = (int) $matches[1];
-            }
+    $totalFare = round((float) ($fare['total'] ?? 0), 2);
 
-            $bookingNo = 'LAT-' . str_pad($lastNumber + 1, 4, '0', STR_PAD_LEFT);
+    if ($totalFare <= 0) {
+        return back()
+            ->withInput()
+            ->with('error', 'Calculated fare amount is invalid.');
+    }
 
-            $booking = new Booking();
-            $booking->booking_no = $bookingNo;
+    /*
+    |--------------------------------------------------------------------------
+    | Amount To Charge
+    |--------------------------------------------------------------------------
+    */
 
-            // --- Passenger Info ---
-            $booking->passenger_name     = $request->passenger_name;
-            $booking->passenger_email    = $request->passenger_email;
-            $booking->passenger_phone    = $request->phone_number;
-            $booking->phone_country_code = $request->phone_country_code;
-            $booking->alternate_phone    = $request->alternate_phone;
-            $booking->mailing_address    = $request->mailing_address;
-            $booking->special_needs      = $request->special_needs;
+    $amountToCharge = in_array(
+        $paymentMethod,
+        ['cash', 'deposit'],
+        true
+    )
+        ? 1.00
+        : $totalFare;
 
-            // --- Trip Info ---
-            $booking->trip_type       = $request->trip_type;
-            $booking->pickup_date     = Carbon::parse($request->date)->format('Y-m-d');
-            $booking->pickup_time     = $request->time;
-            $booking->pickup_address  = $request->pickup ?? $request->fromAddress;
-            $booking->dropoff_address = $request->dropoff ?? $request->to_address;
-            $booking->distance_miles  = $request->distance_miles ?? 0;
+    $amountCharged = round(
+        (float) $request->amount_charged,
+        2
+    );
 
-            // --- Flight & Vehicle ---
-            $fare = $request->fare ?? [];
-            $booking->airline_name    = $request->airline_name;
-            $booking->flight_number   = $request->flight_number;
-            $booking->vehicle_id      = $request->vehicle_id;
-            $booking->vehicle_type    = $fare['name'] ?? 'Unknown';
-            $booking->vehicles_used   = $request->vehicles_used ?? 1;
+    if (abs($amountCharged - $amountToCharge) > 0.05) {
+        return back()
+            ->withInput()
+            ->with(
+                'error',
+                'Payment amount mismatch. Expected: $' .
+                number_format($amountToCharge, 2)
+            );
+    }
 
-            // --- Counts ---
-            $booking->adults           = $request->adults ?? 0;
-            $booking->children         = $request->children ?? 0;
-            $booking->total_passengers = $request->reqPassengers;
-            $booking->luggage          = $request->luggage ?? 0;
+    /*
+    |--------------------------------------------------------------------------
+    | Create Booking
+    |--------------------------------------------------------------------------
+    */
 
-            // --- Extras ---
-            $booking->booster_seat_count = $request->booster_seat ?? 0;
-            $booking->infant_seat_count  = $request->infant_seat ?? 0;
-            $booking->front_seat_count   = $request->front_seat ?? 0;
-            $booking->stopover_count     = $request->stopover ?? 0;
-            $booking->pet_count          = $request->pets ?? 0;
+    DB::beginTransaction();
 
-            // --- Billing ---
-            $booking->card_holder_name = $request->card_holder_name;
-            $booking->billing_phone    = $request->billing_phone;
-            $booking->billing_address  = $request->billing_address;
-            $booking->billing_city     = $request->billing_city;
-            $booking->billing_state    = $request->billing_state;
-            $booking->billing_zip      = $request->billing_zip;
+    try {
 
-            // --- Fees ---
-            $booking->estimated_fare    = $fare['estimatedFare'] ?? 0;
-            $booking->gratuity          = $fare['gratuity'] ?? 0;
-            $booking->pickup_tax        = $fare['pickup_tax'] ?? 0;
-            $booking->dropoff_tax       = $fare['dropoff_tax'] ?? 0;
-            $booking->parking_fee       = $fare['parking_fee'] ?? 0;
-            $booking->toll_fee          = $fare['toll_fee'] ?? 0;
-            $booking->surcharge_fee     = $fare['surcharge_fee'] ?? 0;
-            $booking->extra_luggage_fee = $fare['extra_luggage_fee'] ?? 0;
-            $booking->extras_total      = $request->extras_total ?? 0;
-            $booking->child_seat_fee    = $fare['child_seat_fee'] ?? 0;
-            $booking->booster_seat_fee  = $fare['booster_seat_fee'] ?? 0;
-            $booking->front_seat_fee    = $fare['front_seat_fee'] ?? 0;
-            $booking->stopover_fee      = $fare['stopover_fee'] ?? 0;
-            $booking->surcharge_details = $request->surcharge_details ?? [];
-            $booking->extra_charge_details = $request->extra_charge_details ?? [];
+        $lastBooking = Booking::lockForUpdate()
+            ->orderByDesc('id')
+            ->first();
 
-            // --- Payment Initials ---
-            $booking->total_fare     = isset($fare['total']) ? (float) $fare['total'] : 0;
-            $booking->paid_amount    = 0;
-            $booking->due_amount     = $booking->total_fare;
-            $booking->payment_method = 'stripe';
-            $booking->status         = 'pending';
-            $booking->payment_status = 'unpaid';
+        $lastNumber = 0;
 
-            $booking->save();
-            DB::commit();
-
-        } catch (\Throwable $e) {
-
-            DB::rollBack();
-            Log::error('Database Save Error: ' . $e->getMessage());
-
-            return back()->with('notify', [
-                'type' => 'error',
-                'message' => 'System Error: Could not initiate booking. Please try again. (No money was charged)'
-            ])->withInput();
+        if (
+            $lastBooking &&
+            preg_match(
+                '/(?:BLAT|LAT)-(\d+)/',
+                (string) $lastBooking->booking_no,
+                $matches
+            )
+        ) {
+            $lastNumber = (int) $matches[1];
         }
-        // ======================================================
-        // STEP 3: STRIPE PAYMENT PROCESSING
-        // ======================================================
-        $paymentIntent = null;
-        try {
-            Stripe::setApiKey(config('services.stripe.secret'));
-            $paymentIntent = PaymentIntent::create([
-                'amount' => (int) round($amountCharged * 100),
+
+        $bookingNo = 'LAT-' .
+            str_pad(
+                $lastNumber + 1,
+                4,
+                '0',
+                STR_PAD_LEFT
+            );
+
+        $booking = new Booking();
+
+        $booking->booking_no = $bookingNo;
+
+        // Passenger
+        $booking->passenger_name = $request->passenger_name;
+        $booking->passenger_email = $request->passenger_email;
+        $booking->passenger_phone =
+            $request->passenger_phone ??
+            $request->phone_number;
+
+        $booking->phone_country_code =
+            $request->phone_country_code;
+
+        $booking->alternate_phone =
+            $request->alternate_phone;
+
+        $booking->mailing_address =
+            $request->mailing_address;
+
+        $booking->special_needs =
+            $request->special_needs;
+
+        // Trip
+        $booking->trip_type =
+            $request->trip_type ??
+            $request->tripType;
+
+        $booking->pickup_date =
+            $request->pickup_date ??
+            $request->date;
+
+        $booking->pickup_time =
+            $request->pickup_time ??
+            $request->time;
+
+        $booking->pickup_address =
+            $request->pickup ??
+            $request->pickup_address ??
+            $request->fromAddress;
+
+        $booking->dropoff_address =
+            $request->dropoff ??
+            $request->dropoff_address ??
+            $request->to_address;
+
+        $booking->distance_miles =
+            (float) ($request->distance_miles ?? 0);
+
+        // Flight
+        $booking->airline_name =
+            $request->airline_name;
+
+        $booking->flight_number =
+            $request->flight_number;
+
+        // Vehicle
+        $booking->vehicle_id =
+            $request->vehicle_id;
+
+        $booking->vehicle_type =
+            $request->vehicle_type ??
+            ($fare['name'] ?? null);
+
+        $booking->vehicles_used =
+            (int) ($request->vehicles_used ?? 1);
+
+        // Passengers
+        $booking->adults =
+            (int) ($request->adults ?? 0);
+
+        $booking->children =
+            (int) ($request->children ?? 0);
+
+        $booking->total_passengers =
+            (int) (
+                $request->total_passengers ??
+                $request->reqPassengers ??
+                (
+                    $booking->adults +
+                    $booking->children
+                )
+            );
+
+        $booking->luggage =
+            (int) ($request->luggage ?? 0);
+
+        // Extras
+        $booking->booster_seat_count =
+            (int) (
+                $request->booster_seat_count ??
+                $request->booster_seat ??
+                0
+            );
+
+        $booking->infant_seat_count =
+            (int) (
+                $request->infant_seat_count ??
+                $request->infant_seat ??
+                0
+            );
+
+        $booking->front_seat_count =
+            (int) (
+                $request->front_seat_count ??
+                $request->front_seat ??
+                0
+            );
+
+        $booking->stopover_count =
+            (int) (
+                $request->stopover_count ??
+                $request->stopover ??
+                0
+            );
+
+        $booking->pet_count =
+            (int) (
+                $request->pet_count ??
+                $request->pets ??
+                0
+            );
+
+        // Billing
+        $booking->card_holder_name =
+            $request->card_holder_name ??
+            $request->passenger_name;
+
+        $booking->billing_phone =
+            $request->billing_phone ??
+            $booking->passenger_phone;
+
+        $booking->billing_address =
+            $request->billing_address ??
+            $booking->mailing_address;
+
+        $booking->billing_city =
+            $request->billing_city;
+
+        $booking->billing_state =
+            $request->billing_state;
+
+        $booking->billing_zip =
+            $request->billing_zip;
+
+        // Fare
+        $booking->estimated_fare =
+            (float) ($fare['estimated_fare'] ?? 0);
+
+        $booking->gratuity =
+            (float) ($fare['gratuity'] ?? 0);
+
+        $booking->pickup_tax =
+            (float) ($fare['pickup_tax'] ?? 0);
+
+        $booking->dropoff_tax =
+            (float) ($fare['dropoff_tax'] ?? 0);
+
+        $booking->parking_fee =
+            (float) ($fare['parking_fee'] ?? 0);
+
+        $booking->toll_fee =
+            (float) ($fare['toll_fee'] ?? 0);
+
+        $booking->surcharge_fee =
+            (float) ($fare['surcharge_fee'] ?? 0);
+
+        $booking->extra_luggage_fee =
+            (float) ($fare['extra_luggage_fee'] ?? 0);
+
+        $booking->child_seat_fee =
+            (float) ($fare['child_seat_fee'] ?? 0);
+
+        $booking->booster_seat_fee =
+            (float) ($fare['booster_seat_fee'] ?? 0);
+
+        $booking->front_seat_fee =
+            (float) ($fare['front_seat_fee'] ?? 0);
+
+        $booking->stopover_fee =
+            (float) ($fare['stopover_fee'] ?? 0);
+
+        $booking->extras_total =
+            (float) ($fare['extras_total'] ?? 0);
+
+        $booking->total_fare = $totalFare;
+
+        // Payment initial state
+        $booking->paid_amount = 0;
+        $booking->due_amount = $totalFare;
+        $booking->payment_method = $paymentMethod;
+        $booking->payment_status = 'pending';
+        $booking->status = 'pending';
+
+        $booking->save();
+
+        DB::commit();
+
+    } catch (\Throwable $e) {
+
+        DB::rollBack();
+
+        Log::error('Booking creation failed', [
+            'message' => $e->getMessage(),
+            'email' => $request->passenger_email,
+        ]);
+
+        return back()
+            ->withInput()
+            ->with(
+                'error',
+                'Unable to create booking.'
+            );
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Stripe Payment
+    |--------------------------------------------------------------------------
+    */
+
+    try {
+
+        Stripe::setApiKey(
+            config('services.stripe.secret')
+        );
+
+        if (
+            empty(
+                config('services.stripe.secret')
+            )
+        ) {
+            throw new \Exception(
+                'Stripe secret key is not configured.'
+            );
+        }
+
+        $idempotencyKey =
+            'booking-' .
+            $booking->id .
+            '-' .
+            md5(
+                $booking->booking_no .
+                '|' .
+                $amountToCharge .
+                '|' .
+                $paymentMethod
+            );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Create + Confirm PaymentIntent
+        |--------------------------------------------------------------------------
+        */
+
+        $paymentIntent = PaymentIntent::create(
+            [
+                'amount' =>
+                    (int) round(
+                        $amountToCharge * 100
+                    ),
+
                 'currency' => 'usd',
+
                 'payment_method_data' => [
                     'type' => 'card',
-                    'card' => ['token' => $token],
+                    'card' => [
+                        'token' =>
+                            $request->stripe_token,
+                    ],
                 ],
-                'confirmation_method' => 'manual',
-                'capture_method' => 'manual',
+
+                /*
+                | Automatic capture
+                */
+                'capture_method' => 'automatic',
+
+                /*
+                | Confirm immediately
+                */
                 'confirm' => true,
 
-                // --- FIX: Redirect Error Solution ---
-                'return_url' => route('home'),
+                'automatic_payment_methods' => [
+                    'enabled' => true,
+                    'allow_redirects' => 'never',
+                ],
 
-                'description' => 'Booking: ' . $booking->booking_no,
-                'receipt_email' => $request->passenger_email,
+                'description' =>
+                    'Booking: ' .
+                    $booking->booking_no,
+
+                'receipt_email' =>
+                    $booking->passenger_email,
+
                 'metadata' => [
-                    'booking_id' => $booking->id,
-                    'booking_no' => $booking->booking_no,
-                    'phone' => $request->phone_number
-                ]
-            ]);
-            $cardBrand = null;
-            $cardLast4 = null;
-            if (isset($paymentIntent->charges->data[0])) {
-                $charge = $paymentIntent->charges->data[0];
-                $cardBrand = $charge->payment_method_details->card->brand ?? null;
-                $cardLast4 = $charge->payment_method_details->card->last4 ?? null;
-            }
+                    'booking_id' =>
+                        (string) $booking->id,
 
-            // ==================================================
-            // STEP 4: SUCCESS - CAPTURE & UPDATE
-            // ==================================================
-            $paymentIntent->capture();
-            $booking->transaction_id = $paymentIntent->id;
-            $booking->paid_amount    = $amountCharged;
-            $booking->due_amount     = max(0, $booking->total_fare - $amountCharged);
-            $booking->payment_status = ($booking->due_amount <= 0.01) ? 'paid' : 'partial';
-            $booking->status         = 'confirmed';
-            $booking->card_brand     = $cardBrand;
-            $booking->card_last_four = $cardLast4;
+                    'booking_no' =>
+                        (string) $booking->booking_no,
+
+                    'payment_method' =>
+                        (string) $paymentMethod,
+
+                    'total_fare' =>
+                        (string) $totalFare,
+
+                    'amount_to_charge' =>
+                        (string) $amountToCharge,
+                ],
+            ],
+            [
+                'idempotency_key' =>
+                    $idempotencyKey,
+            ]
+        );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Stripe Payment Status
+        |--------------------------------------------------------------------------
+        */
+
+        Log::info(
+            'Stripe PaymentIntent created',
+            [
+                'booking_id' => $booking->id,
+                'booking_no' => $booking->booking_no,
+                'payment_intent_id' =>
+                    $paymentIntent->id,
+                'status' =>
+                    $paymentIntent->status,
+                'amount' =>
+                    $amountToCharge,
+            ]
+        );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | 3D Secure / Requires Action
+        |--------------------------------------------------------------------------
+        */
+
+        if (
+            $paymentIntent->status ===
+            'requires_action'
+        ) {
+
+            $booking->transaction_id =
+                $paymentIntent->id;
+
             $booking->save();
-            try {
 
-                Mail::to(config('mail.from.address'))->send(new BookingConfirmationMail($booking));
-                Mail::to($booking->passenger_email)->send(new BookingConfirmationMail($booking));
-            } catch (\Exception $e) {
-                Log::error('Mail Error: ' . $e->getMessage());
+            return redirect()
+                ->route('home')
+                ->with([
+                    'status' => 'requires_action',
+
+                    'payment_intent_id' =>
+                        $paymentIntent->id,
+
+                    'client_secret' =>
+                        $paymentIntent->client_secret,
+
+                    'booking_no' =>
+                        $booking->booking_no,
+                ]);
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Payment Must Be Succeeded
+        |--------------------------------------------------------------------------
+        */
+
+        if (
+            $paymentIntent->status !==
+            'succeeded'
+        ) {
+
+            throw new \Exception(
+                'Stripe payment was not successful. Status: ' .
+                $paymentIntent->status
+            );
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Verify Amount
+        |--------------------------------------------------------------------------
+        */
+
+        $amountPaid =
+            (
+                (float)
+                ($paymentIntent->amount_received ?? 0)
+            ) / 100;
+
+        if (
+            abs(
+                $amountPaid -
+                $amountToCharge
+            ) > 0.01
+        ) {
+
+            throw new \Exception(
+                'Stripe payment amount mismatch.'
+            );
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Update Booking
+        |--------------------------------------------------------------------------
+        */
+
+        $dueAmount = max(
+            0,
+            round(
+                $totalFare -
+                $amountPaid,
+                2
+            )
+        );
+
+        $paymentStatus =
+            $dueAmount <= 0.01
+                ? 'paid'
+                : 'partial';
+
+
+        $booking->transaction_id =
+            $paymentIntent->id;
+
+        $booking->paid_amount =
+            $amountPaid;
+
+        $booking->due_amount =
+            $dueAmount;
+
+        $booking->payment_status =
+            $paymentStatus;
+
+        $booking->status =
+            'confirmed';
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Card Details
+        |--------------------------------------------------------------------------
+        */
+
+        try {
+
+            if (
+                !empty(
+                    $paymentIntent->payment_method
+                )
+            ) {
+
+                $paymentMethodObject =
+                    PaymentMethod::retrieve(
+                        $paymentIntent->payment_method
+                    );
+
+                if (
+                    $paymentMethodObject->card
+                ) {
+
+                    $booking->card_brand =
+                        $paymentMethodObject
+                            ->card
+                            ->brand ??
+                        null;
+
+                    $booking->card_last_four =
+                        $paymentMethodObject
+                            ->card
+                            ->last4 ??
+                        null;
+                }
             }
-
-            // return redirect()->route('home')->with('booking_success', [
-            //         'title' => 'Booking Confirmed!',
-            //         'message' => "Your booking #{$booking->booking_no} has been successfully placed. A confirmation email has been sent.",
-            //         'booking_no' => $booking->booking_no
-            //     ]);
-            return redirect()->route('home')->with('notify', [
-                'type' => 'success',
-                'message' => "Booking Confirmed! Your booking #{$booking->booking_no} has been successfully placed."
-            ]);
 
         } catch (\Throwable $e) {
-            // ==================================================
-            // STEP 5: FAILURE & SAFETY NET (REFUND LOGIC)
-            // ==================================================
-            Log::error('Stripe/System Error: ' . $e->getMessage());
 
-            if($booking) {
-                $booking->status = 'failed';
-                $booking->payment_status = 'failed';
-                $booking->save();
-            }
-            try {
-                $failData = [
-                    'name' => $request->passenger_name,
-                    'email' => $request->passenger_email,
-                    'phone' => $request->phone_number,
-                    'error_message' => $e->getMessage(),
-                    'date' => now()->toDateTimeString()
-                ];
-                Mail::to(config('mail.from.address'))->send(new PaymentFailedMail($failData));
-            } catch (\Exception $ex) {}
+            Log::warning(
+                'Unable to retrieve card details',
+                [
+                    'payment_intent_id' =>
+                        $paymentIntent->id,
 
-           return back()->with('notify', [
-                'type' => 'error',
-                'message' => 'Payment Failed. If charged, it will be refunded automatically.'
-            ])->withInput();
+                    'message' =>
+                        $e->getMessage(),
+                ]
+            );
         }
+
+
+        $booking->save();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Success Log
+        |--------------------------------------------------------------------------
+        */
+
+        Log::info(
+            'Booking confirmed successfully',
+            [
+                'booking_id' => $booking->id,
+
+                'booking_no' =>
+                    $booking->booking_no,
+
+                'payment_intent_id' =>
+                    $paymentIntent->id,
+
+                'payment_method' =>
+                    $paymentMethod,
+
+                'total_fare' =>
+                    $totalFare,
+
+                'paid_amount' =>
+                    $amountPaid,
+
+                'due_amount' =>
+                    $dueAmount,
+
+                'payment_status' =>
+                    $paymentStatus,
+            ]
+        );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Email
+        |--------------------------------------------------------------------------
+        */
+
+        try {
+
+            if (
+                !empty(
+                    $booking->passenger_email
+                )
+            ) {
+
+                Mail::to(
+                    $booking->passenger_email
+                )->queue(
+                    new BookingConfirmationMail(
+                        $booking
+                    )
+                );
+            }
+
+            $adminEmail =
+                config('mail.from.address');
+
+            if (!empty($adminEmail)) {
+
+                Mail::to($adminEmail)->queue(
+                    new AdminBookingConfirmationMail(
+                        $booking
+                    )
+                );
+            }
+
+        } catch (\Throwable $e) {
+
+            Log::error(
+                'Booking confirmation email failed',
+                [
+                    'booking_id' =>
+                        $booking->id,
+
+                    'message' =>
+                        $e->getMessage(),
+                ]
+            );
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Redirect
+        |--------------------------------------------------------------------------
+        */
+
+        return redirect()
+            ->route('home', [
+                'payment' => 'success',
+                'booking' =>
+                    $booking->booking_no,
+            ])
+            ->with('notify', [
+                'type' => 'success',
+                'message' =>
+                    'Payment successful! Booking confirmed.',
+            ]);
+
+    } catch (\Throwable $e) {
+
+        /*
+        |--------------------------------------------------------------------------
+        | Payment Failed
+        |--------------------------------------------------------------------------
+        */
+
+        $booking->status = 'pending';
+        $booking->payment_status = 'failed';
+        $booking->save();
+
+        Log::error(
+            'Stripe payment failed',
+            [
+                'booking_id' =>
+                    $booking->id,
+
+                'booking_no' =>
+                    $booking->booking_no,
+
+                'payment_method' =>
+                    $paymentMethod,
+
+                'amount' =>
+                    $amountToCharge,
+
+                'message' =>
+                    $e->getMessage(),
+            ]
+        );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Payment Failed Email
+        |--------------------------------------------------------------------------
+        */
+
+        try {
+
+            if (
+                !empty(
+                    $booking->passenger_email
+                )
+            ) {
+
+                Mail::to(
+                    $booking->passenger_email
+                )->queue(
+                    new PaymentFailedMail(
+                        $booking
+                    )
+                );
+            }
+
+        } catch (\Throwable $mailException) {
+
+            Log::error(
+                'Payment failed email failed',
+                [
+                    'booking_id' =>
+                        $booking->id,
+
+                    'message' =>
+                        $mailException->getMessage(),
+                ]
+            );
+        }
+
+
+        return back()
+            ->withInput()
+            ->with(
+                'error',
+                'Payment could not be processed. Please try again.'
+            );
     }
+    }
+    private function calculateFare(Request $request): array
+{
+    $rawFare = $request->input('fare', []);
+
+    $estimatedFare = (float) (
+        $rawFare['estimatedFare']
+        ?? $rawFare['estimated_fare']
+        ?? 0
+    );
+
+    $gratuity = (float) (
+        $rawFare['gratuity'] ?? 0
+    );
+
+    $pickupTax = (float) (
+        $rawFare['pickup_tax'] ?? 0
+    );
+
+    $dropoffTax = (float) (
+        $rawFare['dropoff_tax'] ?? 0
+    );
+
+    $parkingFee = (float) (
+        $rawFare['parking_fee'] ?? 0
+    );
+
+    $tollFee = (float) (
+        $rawFare['toll_fee'] ?? 0
+    );
+
+    $surchargeFee = (float) (
+        $rawFare['surcharge_fee'] ?? 0
+    );
+
+    $extraLuggageFee = (float) (
+        $rawFare['extra_luggage_fee'] ?? 0
+    );
+
+    $childSeatFee = (float) (
+        $rawFare['child_seat_fee'] ?? 0
+    );
+
+    $boosterSeatFee = (float) (
+        $rawFare['booster_seat_fee'] ?? 0
+    );
+
+    $frontSeatFee = (float) (
+        $rawFare['front_seat_fee'] ?? 0
+    );
+
+    $stopoverFee = (float) (
+        $rawFare['stopover_fee'] ?? 0
+    );
+
+    $extrasTotal = (float) (
+        $rawFare['extras_total']
+        ?? $request->input('extras_total', 0)
+    );
+
+    $total = isset($rawFare['total'])
+        ? (float) $rawFare['total']
+        : (float) $request->input('amount_charged', 0);
+
+    return [
+        'name' => $rawFare['name'] ?? null,
+
+        'estimated_fare' => $estimatedFare,
+
+        'gratuity' => $gratuity,
+
+        'pickup_tax' => $pickupTax,
+
+        'dropoff_tax' => $dropoffTax,
+
+        'parking_fee' => $parkingFee,
+
+        'toll_fee' => $tollFee,
+
+        'surcharge_fee' => $surchargeFee,
+
+        'extra_luggage_fee' => $extraLuggageFee,
+
+        'child_seat_fee' => $childSeatFee,
+
+        'booster_seat_fee' => $boosterSeatFee,
+
+        'front_seat_fee' => $frontSeatFee,
+
+        'stopover_fee' => $stopoverFee,
+
+        'extras_total' => $extrasTotal,
+
+        'total' => $total,
+    ];
+}
+
 }

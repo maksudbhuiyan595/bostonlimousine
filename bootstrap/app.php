@@ -11,7 +11,11 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->append(\App\Http\Middleware\AddTrailingSlash::class);
+        // Stripe webhook-কে CSRF প্রোটেকশন থেকে বাদ দিন
+        $middleware->validateCsrfTokens(except: [
+            'stripe/webhook',
+            'stripe/*',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

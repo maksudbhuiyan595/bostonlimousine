@@ -684,15 +684,15 @@
                             <!-- Passenger & Luggage -->
                             <div class="row g-2 mb-2">
                                 <div class="col-6">
-                                    <span class="mini-label"><i class="fas fa-user-tie me-1"></i> Adults (8+)</span>
+                                    <span class="mini-label"><i class="fas fa-user-tie me-1"></i> Adults (6+)</span>
                                     <select name="adults" id="adults" class="form-select" required>
                                         <option value="">Select</option>
-                                        @for ($i = 1; $i <= 14; $i++)     <option value="{{ $i }}">{{ $i }}</option>
+                                        @for ($i = 1; $i <= 12; $i++)     <option value="{{ $i }}">{{ $i }}</option>
                                         @endfor
                                             </select> </div>
                                             <div class="col-6">
                                                 <span class="mini-label"><i class="fas fa-child me-1"></i> Children
-                                                    (≤7)</span>
+                                                    (<7)</span>
                                                 <select name="children" id="children" class="form-select">
                                                     <option value="0">0</option>
                                                     @for ($i = 1; $i <= 6; $i++)     <option value="{{ $i }}">{{ $i }}
@@ -866,7 +866,7 @@
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB8jlhc5ZRDUU1SHHpxuwFh4dM0Ggq4n2Q&libraries=places&callback=initMap"
+    src="https://maps.googleapis.com/maps/api/js?key={{ config('services.google_maps.key') }}&libraries=places&callback=initMap"
     async defer></script>
 
 <script>
