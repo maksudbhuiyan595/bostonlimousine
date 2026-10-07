@@ -22,15 +22,6 @@
             background: var(--brand-white);
             color: var(--brand-dark);
         }
-
-        /* Hero Section */
-        .hero-section {
-            background: linear-gradient(135deg, var(--brand-dark) 0%, var(--brand-dark-bg) 100%);
-            padding: 80px 0;
-            position: relative;
-            overflow: hidden;
-        }
-
         .hero-section::before {
             content: '';
             position: absolute;

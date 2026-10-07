@@ -1,8 +1,8 @@
 @extends('layout.app')
 
-@section('title', "Blogs | Boston Logan Airport Car Service")
+@section('title', "Blogs | Logan Airport Car Service")
 
-@section('meta_description',"Professional Boston Logan Airport car service. Reliable transport to and from Logan Airport. Fast, safe, and 24/7 professional airport transfers. Book your airport ride now!")
+@section('meta_description',"Professional Logan Airport car service. Reliable transport to and from Logan Airport. Fast, safe, and 24/7 professional airport transfers. Book your airport ride now!")
 
 @section('schema')
     @php
@@ -51,6 +51,7 @@
         padding: 80px 0;
         background: linear-gradient(135deg, #F9FAFB 0%, #F0F4F8 100%);
         font-family: 'Inter', sans-serif;
+        margin-top: 20px;
     }
 
     /* --- HEADER --- */
@@ -230,7 +231,7 @@
 
         {{-- Section Header --}}
         <div class="section-header">
-            <h2 class="section-title">Boston Logan Airport Travel Blog</h2>
+            <h2 class="section-title">Logan Airport Travel Blog</h2>
             <div class="title-line"></div>
             <p class="section-subtitle">
                 <i class="fas fa-plane-arrival me-2" style="color: #B9924B;"></i>

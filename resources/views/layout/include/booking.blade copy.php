@@ -2,14 +2,11 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+<link
+    href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap"
+    rel="stylesheet">
 
 <style>
-    /* ========================================
-       PREMIUM AMBER COLOR SCHEME - #B9924B
-       COMPACT HEIGHT VERSION
-       ======================================== */
-
     :root {
         --amber-primary: #B9924B;
         --amber-dark: #8B6B2E;
@@ -29,14 +26,35 @@
     }
 
     body {
-        background: linear-gradient(135deg, #0F171D 0%, #1A242C 100%);
+        /* background: linear-gradient(135deg, #0F171D 0%, #1A242C 100%); */
         font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    .hero-section {
+        background-image: linear-gradient(rgba(15, 23, 29, 0.85), rgba(15, 23, 29, 0.85)),
+                              url('images/new-8.webp');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        background-repeat: no-repeat;
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        color: var(--text-light);
+        min-height: 100vh;
+    }
+
+    .reservation-card {
+        background: rgba(26, 36, 44, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 28px;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
     }
 
     .hero-section {
         padding: 28px 0 50px 0;
         position: relative;
+        margin-top: 80px;
     }
+
 
     /* ---------- COMPACT PREMIUM AMBER CARD ---------- */
     .reservation-card {
@@ -53,7 +71,7 @@
 
     .reservation-card:hover {
         transform: translateY(-3px);
-        box-shadow: 0 30px 48px -20px rgba(0,0,0,0.9);
+        box-shadow: 0 30px 48px -20px rgba(0, 0, 0, 0.9);
     }
 
     .form-header {
@@ -85,12 +103,13 @@
     }
 
     /* ========== COMPACT INPUTS - REDUCED HEIGHT ========== */
-    .form-control, .form-select {
+    .form-control,
+    .form-select {
         background-color: var(--bg-dark);
         border: 1px solid var(--border-dark);
         color: var(--text-light) !important;
         font-weight: 500;
-        height: 36px;           /* Compact height */
+        height: 36px;
         border-radius: 12px;
         font-size: 0.78rem;
         transition: all 0.2s;
@@ -115,7 +134,8 @@
         font-size: 0.75rem;
     }
 
-    .form-control:focus, .form-select:focus {
+    .form-control:focus,
+    .form-select:focus {
         background-color: #25333C;
         border-color: var(--amber-primary);
         box-shadow: 0 0 0 3px var(--amber-glow);
@@ -134,15 +154,19 @@
         padding: 0;
     }
 
-    /* Compact Trip Cards */
+    /* ========== TRIP TYPE: SINGLE ROW ON MOBILE (FIXED) ========== */
     .trip-type-container {
         display: flex;
+        flex-direction: row;
         gap: 8px;
         margin: 6px 0 10px 0;
+        flex-wrap: nowrap;
+        width: 100%;
     }
 
     .trip-option {
         flex: 1;
+        min-width: 0;
     }
 
     .trip-option input {
@@ -154,7 +178,7 @@
         flex-direction: row;
         align-items: center;
         justify-content: center;
-        padding: 5px 6px;
+        padding: 6px 4px;
         border: 1px solid var(--border-dark);
         border-radius: 28px;
         cursor: pointer;
@@ -164,9 +188,12 @@
         font-weight: 600;
         color: var(--text-muted);
         font-size: 0.7rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
-    .trip-option input:checked + .trip-card {
+    .trip-option input:checked+.trip-card {
         background: linear-gradient(135deg, var(--amber-primary) 0%, var(--amber-dark) 100%);
         border-color: var(--amber-primary);
         color: #0A0D12;
@@ -176,6 +203,13 @@
 
     .trip-card i {
         font-size: 0.75rem;
+        flex-shrink: 0;
+    }
+
+    .trip-card span {
+        font-size: 0.68rem;
+        font-weight: 600;
+        letter-spacing: -0.2px;
     }
 
     /* Compact Labels */
@@ -355,7 +389,7 @@
         padding: 8px 12px;
         border-radius: 18px;
         border-left: 3px solid var(--amber-primary);
-        box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
     }
 
     .route-icon {
@@ -398,13 +432,54 @@
         margin-top: 6px;
     }
 
-    /* Responsive */
+    /* Loading spinner for airports */
+    .airport-loading {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        border: 2px solid var(--amber-primary);
+        border-radius: 50%;
+        border-top-color: transparent;
+        animation: spin 0.6s linear infinite;
+        margin-left: 8px;
+    }
+
+    @keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    /* Responsive: Trip row remains single row on all screens */
+    @media (max-width: 480px) {
+        .trip-card {
+            padding: 5px 2px;
+        }
+
+        .trip-card span {
+            font-size: 0.6rem;
+        }
+
+        .trip-card i {
+            font-size: 0.65rem;
+        }
+
+        .trip-type-container {
+            gap: 5px;
+        }
+    }
+
     @media (max-width: 991px) {
         .reservation-card {
             margin-bottom: 20px;
         }
+
         .booking-inner {
             padding: 12px;
+        }
+
+        .trip-type-container {
+            flex-wrap: nowrap !important;
         }
     }
 
@@ -412,6 +487,7 @@
         .form-column {
             position: relative;
         }
+
         .reservation-card {
             position: absolute;
             top: 0;
@@ -426,7 +502,7 @@
     #date.flatpickr-input {
         color: var(--text-light) !important;
         -webkit-text-fill-color: var(--text-light) !important;
-         background-color: #121B20;
+        background-color: #121B20;
     }
 
     #date::placeholder {
@@ -435,7 +511,8 @@
     }
 
     /* Disabled input style */
-    .form-control:disabled, .form-select:disabled {
+    .form-control:disabled,
+    .form-select:disabled {
         background-color: #121B20;
         border-color: #2A3840;
         color: #6A808C !important;
@@ -455,16 +532,92 @@
     .mb-3 {
         margin-bottom: 0.6rem !important;
     }
+
+    @media (max-width: 767px) {
+        .hero-section h1 {
+            font-size: 1.3rem !important;
+        }
+
+        .hero-section p {
+            font-size: 0.65rem !important;
+        }
+
+        .reservation-card {
+            margin-bottom: 20px;
+            position: relative !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+        }
+
+        .trip-type-container {
+            flex-direction: row;
+            flex-wrap: nowrap;
+        }
+
+        .trip-card {
+            padding: 5px 4px;
+        }
+
+        .trip-card span {
+            font-size: 0.6rem;
+        }
+
+        #map {
+            height: 200px;
+        }
+
+        .form-control,
+        .form-select {
+            height: 42px;
+            font-size: 0.85rem;
+        }
+
+        .input-group-text {
+            height: 42px;
+        }
+
+        .extra-label {
+            font-size: 0.75rem;
+        }
+
+        .extra-row .form-select {
+            width: 70px !important;
+            height: 34px !important;
+        }
+
+        .btn-get-fare {
+            padding: 12px;
+            font-size: 0.9rem;
+        }
+
+        .route-text span {
+            font-size: 0.7rem;
+        }
+    }
+
+    @media (min-width: 768px) and (max-width: 991px) {
+        #map {
+            height: 300px;
+        }
+    }
+
+    @media (min-width: 992px) {
+        .hero-section {
+            padding-bottom: 100px;
+        }
+    }
 </style>
+
 
 <section class="hero-section">
     <div class="container">
         <div class="text-center mb-3">
-            <h1 class="display-6 fw-bold" style="color: #FFFFFF; text-shadow: 0 2px 8px rgba(0,0,0,0.3); letter-spacing: -0.6px; font-size: 1.6rem;">
+            <h1 class="display-6 fw-bold"
+                style="color: #FFFFFF; text-shadow: 0 2px 8px rgba(0,0,0,0.3); letter-spacing: -0.6px; font-size: 1.6rem;">
                 <i class="fas fa-plane-departure me-2" style="color: #B9924B;"></i>
-                Logan Transfer <span style="color: #B9924B;">| Boston Limousine</span>
+                Logan Airport Transfer <span style="color: #B9924B;">| Boston Car Service</span>
             </h1>
-            <p class="text-light-emphasis" style="color: #fff; font-size: 0.7rem;">Boston Limousine • Luxury Fleet • Executive Service</p>
         </div>
 
         <div class="row align-items-stretch">
@@ -477,6 +630,7 @@
                     </div>
                     <div class="booking-inner">
                         <form id="reservationForm" action="{{ route('step2') }}" method="GET" novalidate>
+                            {{-- @csrf --}}
                             <input type="hidden" name="extras_total" id="extrasTotalInput" value="0">
 
                             <!-- Date & Time row compact -->
@@ -484,7 +638,8 @@
                                 <div class="col-6">
                                     <div class="input-group">
                                         <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
-                                        <input type="text" id="date" name="date" class="form-control flatpickr-input" placeholder="Pickup Date" readonly required>
+                                        <input type="text" id="date" name="date" class="form-control flatpickr-input"
+                                            placeholder="Pickup Date" readonly required>
                                     </div>
                                 </div>
                                 <div class="col-6">
@@ -497,7 +652,7 @@
                                 </div>
                             </div>
 
-                            <!-- Trip Type Cards -->
+                            <!-- Trip Type Cards - SINGLE ROW (MOBILE FIX) -->
                             <div class="trip-type-container">
                                 <div class="trip-option">
                                     <input type="radio" name="tripType" id="type_from" value="fromAirport" checked>
@@ -532,101 +687,144 @@
                                     <span class="mini-label"><i class="fas fa-user-tie me-1"></i> Adults (8+)</span>
                                     <select name="adults" id="adults" class="form-select" required>
                                         <option value="">Select</option>
-                                        <option value="1">1</option><option value="2">2</option>
-                                        <option value="3">3</option><option value="4">4</option>
-                                        <option value="5">5</option><option value="6">6</option>
-                                        <option value="7">7</option><option value="8">8</option>
-                                    </select>
-                                </div>
-                                <div class="col-6">
-                                    <span class="mini-label"><i class="fas fa-child me-1"></i> Children (≤7)</span>
-                                    <select name="children" id="children" class="form-select">
-                                        <option value="0">0</option><option value="1">1</option>
-                                        <option value="2">2</option><option value="3">3</option>
-                                        <option value="4">4</option>
-                                    </select>
-                                </div>
-                            </div>
+                                        @for ($i = 1; $i <= 14; $i++)     <option value="{{ $i }}">{{ $i }}</option>
+                                        @endfor
+                                            </select> </div>
+                                            <div class="col-6">
+                                                <span class="mini-label"><i class="fas fa-child me-1"></i> Children
+                                                    (≤7)</span>
+                                                <select name="children" id="children" class="form-select">
+                                                    <option value="0">0</option>
+                                                    @for ($i = 1; $i <= 6; $i++)     <option value="{{ $i }}">{{ $i }}
+                                                        </option>
+                                                    @endfor
+                                                        </select> </div>
+                                            </div>
 
-                            <div class="row g-2 mb-2">
-                                <div class="col-6">
-                                    <span class="mini-label"><i class="fas fa-suitcase-rolling me-1"></i> Luggage</span>
-                                    <select name="luggage" id="luggage" class="form-select" required>
-                                        <option value="">Select luggage</option>
-                                    </select>
-                                </div>
-                                <div class="col-6">
-                                    <span class="mini-label"><i class="fas fa-car-seat me-1"></i> Child Seats</span>
-                                    <select name="seats_dummy" id="childSeatsTrigger" class="form-select">
-                                        <option value="0">0</option><option value="1">1</option>
-                                        <option value="2">2</option><option value="3">3</option>
-                                        <option value="4">4</option>
-                                    </select>
-                                </div>
-                            </div>
+                                            <div class="row g-2 mb-2">
+                                                <div class="col-6">
+                                                    <span class="mini-label"><i
+                                                            class="fas fa-suitcase-rolling me-1"></i> Luggage</span>
+                                                    <select name="luggage" id="luggage" class="form-select" required>
+                                                        <option value="">Select luggage</option>
+                                                        @for ($i = 0; $i <= 12; $i++)     <option value="{{ $i }}">{{ $i }}</option>
+                                                        @endfor
+                                                            </select> </div>
+                                                            <div class="col-6">
+                                                                <span class="mini-label"><i
+                                                                        class="fas fa-car-seat me-1"></i> Child
+                                                                    Seats</span>
+                                                                <select name="seats_dummy" id="childSeatsTrigger"
+                                                                    class="form-select">
+                                                                    <option value="0">0</option>
+                                                                    @for ($i = 1; $i <= 6; $i++)     <option value="{{ $i }}">{{ $i }}</option>
+                                                                    @endfor
+                                                                        </select> </div>
+                                                            </div>
 
-                            <!-- Extras Toggle -->
-                            <div>
-                                <div class="extras-toggle" id="toggleExtrasBtn">
-                                    <i class="fas fa-plus-circle"></i>
-                                    Add Stops / Premium Seats / Pets
-                                    <i class="fas fa-chevron-down ms-auto"></i>
-                                </div>
-                                <div id="extrasSection">
-                                    <div class="extra-row">
-                                        <div class="extra-label">Stopover <span class="extra-price-tag">$25</span></div>
-                                        <div class="d-flex align-items-center gap-2">
-                                            <select id="stopover" data-price="25" class="form-select">
-                                                <option value="0">0</option><option value="1">1</option><option value="2">2</option>
-                                            </select>
-                                            <div id="stopoverDisplay" class="total-price-display">$0</div>
-                                        </div>
-                                    </div>
-                                    <div class="extra-row">
-                                        <div class="extra-label">Pets <span class="extra-price-tag">$20</span></div>
-                                        <div class="d-flex align-items-center gap-2">
-                                            <select id="pets" data-price="20" class="form-select">
-                                                <option value="0">0</option><option value="1">1</option><option value="2">2</option>
-                                            </select>
-                                            <div id="petsDisplay" class="total-price-display">$0</div>
-                                        </div>
-                                    </div>
-                                    <div class="extra-row">
-                                        <div class="extra-label">Infant Seat <span class="extra-price-tag">$15</span></div>
-                                        <div class="d-flex align-items-center gap-2">
-                                            <select id="infantSeat" data-price="15" class="form-select">
-                                                <option value="0">0</option><option value="1">1</option><option value="2">2</option>
-                                            </select>
-                                            <div id="infantSeatDisplay" class="total-price-display">$0</div>
-                                        </div>
-                                    </div>
-                                    <div class="extra-row">
-                                        <div class="extra-label">Front Facing <span class="extra-price-tag">$15</span></div>
-                                        <div class="d-flex align-items-center gap-2">
-                                            <select id="frontSeat" data-price="15" class="form-select">
-                                                <option value="0">0</option><option value="1">1</option><option value="2">2</option>
-                                            </select>
-                                            <div id="frontSeatDisplay" class="total-price-display">$0</div>
-                                        </div>
-                                    </div>
-                                    <div class="extra-row">
-                                        <div class="extra-label">Booster Seat <span class="extra-price-tag">$12</span></div>
-                                        <div class="d-flex align-items-center gap-2">
-                                            <select id="boosterSeat" data-price="12" class="form-select">
-                                                <option value="0">0</option><option value="1">1</option><option value="2">2</option>
-                                            </select>
-                                            <div id="boosterSeatDisplay" class="total-price-display">$0</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                                                            <!-- Extras Toggle -->
+                                                            <div>
+                                                                <div class="extras-toggle" id="toggleExtrasBtn">
+                                                                    <i class="fas fa-plus-circle"></i>
+                                                                    Add Stops / Children Seat / Pets
+                                                                    <i class="fas fa-chevron-down ms-auto"></i>
+                                                                </div>
+                                                                <div id="extrasSection">
+                                                                    <div class="extra-row">
+                                                                        <div class="extra-label">Stopover <span
+                                                                                class="extra-price-tag">${{ $settings->stopover_fee ?? 0 }}</span>
+                                                                        </div>
+                                                                        <div class="d-flex align-items-center gap-2">
+                                                                            <select id="stopover" name="stopover"
+                                                                                data-price="{{ $settings->stopover_fee ?? 0 }}"
+                                                                                class="form-select">
+                                                                                <option value="0">0</option>
+                                                                                <option value="1">1</option><option
+                                                                                    value="2">2</option>
+                                                                                <option value="3">3</option>
+                                                                            </select>
+                                                                            <div id="stopoverDisplay"
+                                                                                class="total-price-display">$0</div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="extra-row">
+                                                                        <div class="extra-label">Pets <span
+                                                                                class="extra-price-tag">${{ $settings->pet_fee ?? $settings->stopover_fee ?? 0 }}</span>
+                                                                        </div>
+                                                                        <div class="d-flex align-items-center gap-2">
+                                                                            <select id="pets" name="pets"
+                                                                                data-price="{{ $settings->pet_fee ?? $settings->stopover_fee ?? 0 }}"
+                                                                                class="form-select">
+                                                                                <option value="0">0</option>
+                                                                                <option value="1">1</option><option
+                                                                                    value="2">2</option> </select>
+                                                                                    <div id="petsDisplay"
+                                                                                        class="total-price-display">$0
+                                                                                    </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="extra-row">
+                                                                        <div class="extra-label">Infant Seat <span
+                                                                                class="extra-price-tag">${{ $settings->child_seat_fee ?? 0 }}</span>
+                                                                        </div>
+                                                                        <div class="d-flex align-items-center gap-2">
+                                                                            <select id="infantSeat" name="infant_seat"
+                                                                                data-price="{{ $settings->child_seat_fee ?? 0 }}"
+                                                                                class="form-select">
+                                                                                <option value="0">0</option>
+                                                                                <option value="1">1</option><option
+                                                                                        value="2">2</option><option
+                                                                                        value="3">3</option>
+                                                                                <option value="4">4</option>
+                                                                            </select>
+                                                                            <div id="infantSeatDisplay"
+                                                                                class="total-price-display">$0</div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="extra-row">
+                                                                        <div class="extra-label">Front Facing <span
+                                                                                class="extra-price-tag">${{ $settings->regular_Seat_rules ?? 0 }}</span></div>
+                                                                        <div class="d-flex align-items-center gap-2">
+                                                                            <select id="frontSeat" name="front_seat"
+                                                                                data-price="{{ $settings->regular_Seat_rules ?? 0 }}"
+                                                                                class="form-select">
+                                                                                <option value="0">0</option>
+                                                                                <option value="1">1</option><option
+                                                                                        value="2">2</option><option
+                                                                                        value="3">3</option>
+                                                                                <option value="4">4</option>
+                                                                            </select>
+                                                                            <div id="frontSeatDisplay"
+                                                                                class="total-price-display">$0</div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="extra-row">
+                                                                        <div class="extra-label">Booster Seat <span
+                                                                                class="extra-price-tag">${{ $settings->booster_seat_fee ?? 0 }}</span></div>
+                                                                        <div class="d-flex align-items-center gap-2">
+                                                                            <select id="boosterSeat" name="booster_seat"
+                                                                                data-price="{{ $settings->booster_seat_fee ?? 0 }}"
+                                                                                class="form-select">
+                                                                                <option value="0">0</option>
+                                                                                <option value="1">1</option><option
+                                                                                        value="2">2</option><option
+                                                                                        value="3">3</option>
+                                                                                <option value="4">4</option>
+                                                                            </select>
+                                                                            <div id="boosterSeatDisplay"
+                                                                                class="total-price-display">$0</div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
 
-                            <button type="submit" class="btn-get-fare">
-                                GET FARE & RESERVE
-                            </button>
-                            <p class="footer-note">
-                                <i class="fas fa-lock me-1"></i>Pay only $1 to confirm. Balance payable after service. 10% cash discount.
-                            </p>
+                                                            <button type="submit" class="btn-get-fare">
+                                                                GET FARE & RESERVE
+                                                            </button>
+                                                            <p class="footer-note">
+                                                                <i class="fas fa-lock me-1"></i>Pay only $1 to confirm.
+                                                                Balance payable after service. 10% cash discount.
+                                                            </p>
                         </form>
                     </div>
                 </div>
@@ -636,7 +834,7 @@
             <div class="col-lg-7 d-flex">
                 <div class="map-sidebar-card w-100">
                     <div class="map-header">
-                        <h4><i class="fas fa-map-marked-alt"></i> Boston Limousine • LIVE</h4>
+                        <h4><i class="fas fa-map-marked-alt"></i>Logan Airport Transfer • LIVE</h4>
                     </div>
                     <div id="map"></div>
                     <div class="location-info-panel">
@@ -656,10 +854,6 @@
                                 <small>Premium arrival zone</small>
                             </div>
                         </div>
-                        {{-- <div class="dynamic-fare-badge" id="estimatedFareMsg">
-                            <span><i class="fas fa-dollar-sign"></i> Est. fare: — </span>
-                            <span><i class="fas fa-road"></i> Distance: — mi</span>
-                        </div> --}}
                     </div>
                 </div>
             </div>
@@ -667,30 +861,45 @@
     </div>
 </section>
 
-<!-- Rest of JavaScript remains the same -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB8jlhc5ZRDUU1SHHpxuwFh4dM0Ggq4n2Q&libraries=places&callback=initMap" async defer></script>
+<script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB8jlhc5ZRDUU1SHHpxuwFh4dM0Ggq4n2Q&libraries=places&callback=initMap"
+    async defer></script>
 
 <script>
-    // [JavaScript remains exactly the same as your original]
     let map, directionsService, directionsRenderer;
     let googleMapsReady = false;
+    let airportsData = [];
 
-    const airportsList = [
-        { id: 1, name: "Boston Logan International Airport", address: "Boston Logan Int'l Airport, Boston, MA" },
-        { id: 2, name: "Manchester-Boston Regional Airport", address: "Manchester, NH" },
-        { id: 3, name: "T.F. Green Airport", address: "Warwick, RI" }
-    ];
+    function fetchAirports() {
+        return $.ajax({ url: '/airports', method: 'GET', dataType: 'json' });
+    }
+
+    function buildAirportSelectFromData(name, includeSelectedLogan = true) {
+        if (!airportsData || airportsData.length === 0) {
+            return `<select name="${name}" class="form-select" required disabled><option value="">Loading airports...</option></select>`;
+        }
+        let html = `<select name="${name}" class="form-select" required><option value="">Select Airport</option>`;
+        airportsData.forEach(airport => {
+            let selected = (airport.name === "Boston Logan International Airport" && includeSelectedLogan) ? "selected" : "";
+            html += `<option value="${airport.id}" data-address="${airport.address || airport.name}" data-name="${airport.name}" ${selected}>${airport.name}</option>`;
+        });
+        html += `</select>`;
+        return html;
+    }
 
     function getCurrentPickupAddress() {
         const tripType = document.querySelector('input[name="tripType"]:checked')?.value;
         if (tripType === 'doorToDoor') return "Concierge Pickup";
         if (tripType === 'fromAirport') {
             let sel = document.querySelector('select[name="from_airport"]');
-            if (sel && sel.value && !sel.disabled) return sel.options[sel.selectedIndex]?.textContent || "Boston Logan Airport";
+            if (sel && sel.value && !sel.disabled) {
+                let selectedOption = sel.options[sel.selectedIndex];
+                return selectedOption?.getAttribute('data-address') || selectedOption?.textContent || "Boston Logan Airport";
+            }
             return "Boston Logan International Airport";
         } else {
             let inputField = document.getElementById('fromAddress');
@@ -708,7 +917,10 @@
             return "Destination";
         } else if (tripType === 'toAirport') {
             let sel = document.querySelector('select[name="to_airport"]');
-            if (sel && sel.value && !sel.disabled) return sel.options[sel.selectedIndex]?.textContent || "Boston Logan Airport";
+            if (sel && sel.value && !sel.disabled) {
+                let selectedOption = sel.options[sel.selectedIndex];
+                return selectedOption?.getAttribute('data-address') || selectedOption?.textContent || "Boston Logan Airport";
+            }
             return "Boston Logan International Airport";
         } else {
             let toInput = document.getElementById('toAddress');
@@ -723,49 +935,21 @@
         const destRaw = getCurrentDropoffAddress();
         document.getElementById('pickupAddrDisplay').innerHTML = originRaw || "— Awaiting address —";
         document.getElementById('dropoffAddrDisplay').innerHTML = destRaw || "— Not selected —";
-        const tripType = document.querySelector('input[name="tripType"]:checked')?.value;
-        if (tripType === 'doorToDoor') {
-            document.getElementById('estimatedFareMsg').innerHTML = `<span><i class="fas fa-concierge-bell"></i> Contact Concierge</span><span><i class="fas fa-phone-alt"></i> +1 (617) 555-8888</span>`;
-            return;
-        }
         if (!originRaw || originRaw === "Pickup address" || !destRaw || destRaw === "Destination address" || destRaw === "Destination") return;
         directionsService.route({
             origin: originRaw,
             destination: destRaw,
             travelMode: google.maps.TravelMode.DRIVING
         }, (response, status) => {
-            if (status === 'OK') {
-                directionsRenderer.setDirections(response);
-                let route = response.routes[0];
-                let distanceMiles = (route.legs[0].distance.value / 1609.34).toFixed(1);
-                let durationMin = Math.round(route.legs[0].duration.value / 60);
-                let baseFare = 45, perMile = 2.5;
-                let estFare = (baseFare + (parseFloat(distanceMiles) * perMile)).toFixed(0);
-                document.getElementById('estimatedFareMsg').innerHTML = `<span><i class="fas fa-dollar-sign"></i> $${estFare}</span><span><i class="fas fa-road"></i> ${distanceMiles} mi · ${durationMin} min</span>`;
-            } else {
-                document.getElementById('estimatedFareMsg').innerHTML = `<span><i class="fas fa-exclamation-triangle"></i> Route unavailable</span><span>— mi</span>`;
-            }
+            if (status === 'OK') directionsRenderer.setDirections(response);
         });
     }
 
-    window.initMap = function() {
+    window.initMap = function () {
         const boston = { lat: 42.3601, lng: -71.0589 };
-        map = new google.maps.Map(document.getElementById("map"), {
-            center: boston,
-            zoom: 11,
-            styles: [
-                { featureType: "all", elementType: "geometry", stylers: [{ color: "#F5F8FC" }] },
-                { featureType: "water", elementType: "geometry", stylers: [{ color: "#D4E5F0" }] },
-                { featureType: "road.highway", elementType: "geometry", stylers: [{ color: "#FEF3C7" }, { weight: 2 }] }
-            ],
-            zoomControl: true,
-            mapTypeControl: false,
-        });
+        map = new google.maps.Map(document.getElementById("map"), { center: boston, zoom: 11 });
         directionsService = new google.maps.DirectionsService();
-        directionsRenderer = new google.maps.DirectionsRenderer({
-            map: map,
-            polylineOptions: { strokeColor: "#B9924B", strokeWeight: 5, strokeOpacity: 0.9 }
-        });
+        directionsRenderer = new google.maps.DirectionsRenderer({ map: map, polylineOptions: { strokeColor: "#B9924B", strokeWeight: 5 } });
         googleMapsReady = true;
         setTimeout(() => updateMapRoute(), 400);
     };
@@ -774,50 +958,11 @@
         if (!window.google || !google.maps.places) setTimeout(() => initAutocompleteOnField(fieldId), 300);
         const inputEl = document.getElementById(fieldId);
         if (inputEl && !inputEl._autocompleteAttached && !inputEl.disabled) {
-            const autocomplete = new google.maps.places.Autocomplete(inputEl, {
-                componentRestrictions: { country: "us" },
-                fields: ["formatted_address"]
-            });
+            const autocomplete = new google.maps.places.Autocomplete(inputEl, { componentRestrictions: { country: "us" }, fields: ["formatted_address"] });
             autocomplete.addListener('place_changed', () => setTimeout(updateMapRoute, 200));
             inputEl._autocompleteAttached = true;
             inputEl.addEventListener('change', () => setTimeout(updateMapRoute, 200));
         }
-    }
-
-    function buildAirportSelect(name, includeSelectedLogan = true) {
-        let html = `<select name="${name}" class="form-select" required><option value="">Select Airport</option>`;
-        airportsList.forEach(airport => {
-            let selected = (airport.name === "Boston Logan International Airport" && includeSelectedLogan) ? "selected" : "";
-            html += `<option value="${airport.id}" data-address="${airport.address}" ${selected}>${airport.name}</option>`;
-        });
-        html += `</select>`;
-        return html;
-    }
-
-    function updateTripFields() {
-        let t = document.querySelector('input[name="tripType"]:checked')?.value;
-        if (!t) return;
-        if (t === 'doorToDoor') {
-            document.getElementById("fromLocation").innerHTML = `<input type="text" class="form-control" value="📞 Contact Concierge" disabled style="color:#B9924B; font-weight:500;">`;
-            document.getElementById("toLocation").innerHTML = `<input type="text" class="form-control" value="📞 Call +1 (617) 555-8888" disabled style="color:#B9924B; font-weight:500;">`;
-        }
-        else if (t === 'fromAirport') {
-            document.getElementById("fromLocation").innerHTML = buildAirportSelect("from_airport", true);
-            document.getElementById("toLocation").innerHTML = `<input type="text" name="to_address" id="toAddress" class="form-control" placeholder="Enter dropoff address" required>`;
-            setTimeout(() => {
-                initAutocompleteOnField("toAddress");
-                attachAirportSelectEvent("from_airport");
-            }, 80);
-        }
-        else if (t === 'toAirport') {
-            document.getElementById("fromLocation").innerHTML = `<input type="text" name="from_address" id="fromAddress" class="form-control" placeholder="Enter pickup address" required>`;
-            document.getElementById("toLocation").innerHTML = buildAirportSelect("to_airport", true);
-            setTimeout(() => {
-                initAutocompleteOnField("fromAddress");
-                attachAirportSelectEvent("to_airport");
-            }, 80);
-        }
-        setTimeout(() => updateMapRoute(), 250);
     }
 
     function attachAirportSelectEvent(selectName) {
@@ -825,7 +970,68 @@
         if (sel) sel.addEventListener("change", () => updateMapRoute());
     }
 
+    function updateTripFields() {
+        let t = document.querySelector('input[name="tripType"]:checked')?.value;
+        if (!t) return;
+        if (t === 'doorToDoor') {
+            document.getElementById("fromLocation").innerHTML = `<input type="text" class="form-control" value="📞 Contact Concierge" disabled style="color:#B9924B; font-weight:500;">`;
+            document.getElementById("toLocation").innerHTML = `<input type="text" class="form-control" value="📞 Call 857-777-2125" disabled style="color:#B9924B; font-weight:500;">`;
+        }
+        else if (t === 'fromAirport') {
+            document.getElementById("fromLocation").innerHTML = buildAirportSelectFromData("from_airport", true);
+            document.getElementById("toLocation").innerHTML = `<input type="text" name="to_address" id="toAddress" class="form-control" placeholder="Enter dropoff address" required>`;
+            setTimeout(() => { initAutocompleteOnField("toAddress"); attachAirportSelectEvent("from_airport"); }, 80);
+        }
+        else if (t === 'toAirport') {
+            document.getElementById("fromLocation").innerHTML = `<input type="text" name="from_address" id="fromAddress" class="form-control" placeholder="Enter pickup address" required>`;
+            document.getElementById("toLocation").innerHTML = buildAirportSelectFromData("to_airport", true);
+            setTimeout(() => { initAutocompleteOnField("fromAddress"); attachAirportSelectEvent("to_airport"); }, 80);
+        }
+        setTimeout(() => updateMapRoute(), 250);
+    }
+
+    function updateLuggageByPassengers() {
+        let adults = parseInt($("#adults").val()) || 0;
+        let children = parseInt($("#children").val()) || 0;
+        let totalPax = adults + children;
+
+        if (totalPax === 0) return;
+
+        // Show loading state
+        $("#luggage").html('<option value="">Loading...</option>');
+        $("#luggage").prop('disabled', true);
+
+        $.ajax({
+            url: "{{ route('luggage.capacity') }}",
+            type: "GET",
+                data: { passenger: totalPax },
+            dataType: "json",
+            success: function (response) {
+                const maxLuggage = (response && response.capacity_luggage !== undefined) ? parseInt(response.capacity_luggage) : 12;
+                let html = '<option value="">Select luggage</option>';
+                for (let i = 0; i <= maxLuggage; i++) {
+                    let selected = (i === 1) ? 'selected' : '';
+                    html += `<option value="${i}" ${selected}>${i}</option>`;
+                }
+                $("#luggage").html(html);
+                $("#luggage").prop('disabled', false);
+            },
+            error: function () {
+                let html = '<option value="">Select luggage</option>';
+                for (let i = 0; i <= 12; i++) {
+                    html += `<option value="${i}" ${i === 1 ? 'selected' : ''}>${i}</option>`;
+                }
+                $("#luggage").html(html);
+                $("#luggage").prop('disabled', false);
+            }
+        });
+    }
+
     document.addEventListener("DOMContentLoaded", () => {
+        fetchAirports().then(response => { airportsData = response; initializeForm(); }).catch(error => { console.error(error); airportsData = [{ id: 1, name: "Boston Logan International Airport", address: "Boston Logan Int'l Airport, Boston, MA" }]; initializeForm(); });
+    });
+
+    function initializeForm() {
         flatpickr("#date", { minDate: "today", dateFormat: "Y-m-d", disableMobile: true });
 
         const timeSelect = document.getElementById("time");
@@ -837,110 +1043,111 @@
             }
         }
 
-        function updateLuggageMax() {
-            let adults = parseInt($("#adults").val()) || 1, children = parseInt($("#children").val()) || 0;
-            let total = adults + children, maxLug = Math.min(10, total + 2);
-            let opts = '<option value="">Select luggage</option>';
-            for (let i = 0; i <= maxLug; i++) opts += `<option value="${i}">${i}</option>`;
-            $("#luggage").html(opts);
-            if ($("#luggage").val() === "") $("#luggage").val(1);
-        }
-
-        $("#adults, #children").on("change", updateLuggageMax);
-        updateLuggageMax();
-
-        document.querySelectorAll('input[name="tripType"]').forEach(r => {
-            r.addEventListener('change', (e) => {
-                updateTripFields();
-                if(e.target.value === 'doorToDoor') {
-                    Swal.fire({
-                        icon: 'info',
-                        title: '🚖 Door-to-Door',
-                        text: 'Call Concierge +1 (617) 555-8888',
-                        background: '#0F171D',
-                        color: '#FFF',
-                        confirmButtonColor: '#B9924B'
-                    });
-                }
-            });
-        });
-        updateTripFields();
-
-        const extras = [
-            { id: 'stopover', price: 25 },
-            { id: 'pets', price: 20 },
-            { id: 'infantSeat', price: 15 },
-            { id: 'frontSeat', price: 15 },
-            { id: 'boosterSeat', price: 12 }
-        ];
-
-        extras.forEach(item => {
-            let el = document.getElementById(item.id);
-            if(el) {
-                el.addEventListener("change", () => {
-                    let total = (parseInt(el.value)||0) * item.price;
-                    document.getElementById(item.id + "Display").innerText = "$" + total;
-                    let grand = extras.reduce((sum, it) => sum + ((parseInt(document.getElementById(it.id)?.value)||0) * it.price), 0);
-                    document.getElementById("extrasTotalInput").value = grand;
-                });
-            }
+        // Luggage update on passenger change using AJAX
+        $("#adults, #children").on("change", function () {
+            updateLuggageByPassengers();
         });
 
-        $("#toggleExtrasBtn").on("click", function() {
-            $("#extrasSection").slideToggle();
-            $(this).find(".fa-chevron-down").toggleClass("fa-chevron-up");
-        });
+        // Initial luggage load
+        setTimeout(updateLuggageByPassengers, 100);
 
-        $("#childSeatsTrigger").on("change", function(){
-            if($(this).val() !== "0" && $("#extrasSection").is(":hidden")) {
-                $("#extrasSection").slideDown();
-                $("#toggleExtrasBtn .fa-chevron-down").addClass("fa-chevron-up");
-            }
-        });
-
-        $("#reservationForm").on("submit", function(e){
-            e.preventDefault();
-            const tripType = document.querySelector('input[name="tripType"]:checked')?.value;
-            if(tripType === 'doorToDoor') {
+        // Trip type change handler with Door-to-Door notification
+        document.querySelectorAll('input[name="tripType"]').forEach(r => r.addEventListener('change', (e) => {
+            updateTripFields();
+            if (e.target.value === 'doorToDoor') {
                 Swal.fire({
                     icon: 'info',
-                    title: 'Concierge Booking',
-                    text: 'Please call +1 (617) 555-8888',
+                    title: '🚖 Door-to-Door Service',
+                    text: 'Please call our concierge at 857-777-2125 for door-to-door booking',
                     background: '#0F171D',
                     color: '#FFF',
-                    confirmButtonColor: '#B9924B'
-                });
-                return;
-            }
-
-            let missing = !$("#date").val() || !$("#time").val() || !$("#adults").val() || !$("#luggage").val();
-            let fromVal = document.querySelector('[name="from_airport"]')?.value || document.querySelector('[name="from_address"]')?.value;
-            let toVal = document.querySelector('[name="to_airport"]')?.value || document.querySelector('[name="to_address"]')?.value;
-
-            if(missing || !fromVal || !toVal) {
-                return Swal.fire({
-                    icon: 'warning',
-                    title: 'Incomplete',
-                    text: 'Fill all required fields',
-                    background: '#0F171D',
-                    color: '#FFF',
-                    confirmButtonColor: '#B9924B'
+                    confirmButtonColor: '#B9924B',
+                    confirmButtonText: 'Call Now'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = 'tel:8577772125';
+                    }
                 });
             }
+        }));
 
+        updateTripFields();
+
+        // Extras calculation
+        const extras = [
+            { id: 'stopover', price: {{ $settings->stopover_fee ?? 0 }} },
+    { id: 'pets', price: {{ $settings->pet_fee ?? $settings->stopover_fee ?? 0 }} },
+    {
+        id: 'infantSeat', price: {{ $settings->child_seat_fee ?? 0 }} },
+        { id: 'frontSeat', price: {{ $settings->regular_Seat_rules ?? 0 }}
+    },
+    { id: 'boosterSeat', price: {{ $settings->booster_seat_fee ?? 0 }} }
+        ];
+
+    extras.forEach(item => {
+        let el = document.getElementById(item.id);
+        if (el) el.addEventListener("change", () => {
+            let total = (parseInt(el.value) || 0) * item.price;
+            document.getElementById(item.id + "Display").innerText = "$" + total;
+            let grand = extras.reduce((sum, it) => sum + ((parseInt(document.getElementById(it.id)?.value) || 0) * it.price), 0);
+            document.getElementById("extrasTotalInput").value = grand;
+        });
+    });
+
+    $("#toggleExtrasBtn").on("click", function () { $("#extrasSection").slideToggle(); $(this).find(".fa-chevron-down").toggleClass("fa-chevron-up"); });
+
+    $("#childSeatsTrigger").on("change", function () {
+        if ($(this).val() !== "0" && $("#extrasSection").is(":hidden")) {
+            $("#extrasSection").slideDown();
+            $("#toggleExtrasBtn .fa-chevron-down").addClass("fa-chevron-up");
+        }
+    });
+
+    // Form submission
+    $("#reservationForm").on("submit", function (e) {
+        e.preventDefault();
+
+        const tripType = document.querySelector('input[name="tripType"]:checked')?.value;
+
+        if (tripType === 'doorToDoor') {
             Swal.fire({
-                title: 'Processing',
-                text: 'Redirecting to secure portal',
-                icon: 'success',
-                timer: 1200,
-                showConfirmButton: false,
+                icon: 'info',
+                title: '🚖 Door-to-Door Service',
+                text: 'Please call our concierge at 857-777-2125 for door-to-door booking',
                 background: '#0F171D',
-                didClose: () => {
-                    document.getElementById("reservationForm").submit();
+                color: '#FFF',
+                confirmButtonColor: '#B9924B',
+                confirmButtonText: 'Call Now'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = 'tel:8577772125';
                 }
             });
-        });
+            return;
+        }
 
-        $(document).on('change keyup', '#fromAddress, #toAddress, select[name="from_airport"], select[name="to_airport"]', () => setTimeout(updateMapRoute, 400));
+        let missing = !$("#date").val() || !$("#time").val() || !$("#adults").val() || !$("#luggage").val();
+        let fromVal = document.querySelector('[name="from_airport"]')?.value || document.querySelector('[name="from_address"]')?.value;
+        let toVal = document.querySelector('[name="to_airport"]')?.value || document.querySelector('[name="to_address"]')?.value;
+
+        if (missing || !fromVal || !toVal) {
+            return Swal.fire({ icon: 'warning', title: 'Incomplete', text: 'Fill all required fields', background: '#0F171D', color: '#FFF', confirmButtonColor: '#B9924B' });
+        }
+
+        // Child seats validation
+        const requiredSeats = parseInt($("#childSeatsTrigger").val()) || 0;
+        const vInfant = parseInt($("#infantSeat").val()) || 0;
+        const vFront = parseInt($("#frontSeat").val()) || 0;
+        const vBooster = parseInt($("#boosterSeat").val()) || 0;
+
+        if (requiredSeats > 0 && requiredSeats !== (vInfant + vFront + vBooster)) {
+            Swal.fire({ icon: 'error', title: 'Seat Mismatch', text: `Please select ${requiredSeats} child seat(s)`, background: '#0F171D', color: '#FFF', confirmButtonColor: '#B9924B' });
+            return;
+        }
+
+        Swal.fire({ title: 'Processing', text: 'Redirecting to secure portal', icon: 'success', timer: 1200, showConfirmButton: false, background: '#0F171D', didClose: () => { document.getElementById("reservationForm").submit(); } });
     });
+
+    $(document).on('change keyup', '#fromAddress, #toAddress, select[name="from_airport"], select[name="to_airport"]', () => setTimeout(updateMapRoute, 400));
+    }
 </script>

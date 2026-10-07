@@ -36,6 +36,7 @@
             padding: 40px 20px;
             margin-top: 20px;
             border-radius: 12px;
+            margin-top: 90px;
         }
 
         .payment-wrapper .page-title {
@@ -43,6 +44,7 @@
             font-size: 1.8rem;
             color: #1F2937;
             margin-bottom: 5px;
+            margin-top: -12px;
         }
 
         .payment-wrapper .step-text {

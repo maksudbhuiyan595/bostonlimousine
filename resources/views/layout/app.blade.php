@@ -23,23 +23,19 @@
     <!-- Open Graph -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ url()->current() }}">
-    <meta property="og:title"
-        content="@yield('title', 'Logan Airport Transfer | Boston Airport Car Service')">
+    <meta property="og:title" content="@yield('title', 'Logan Airport Transfer | Boston Airport Car Service')">
     <meta property="og:description"
         content="@yield('meta_description', 'Reliable airport transportation services in Boston and Logan Airport.')">
-    <meta property="og:image"
-        content="@yield('og_image', asset('images/logo.png'))">
+    <meta property="og:image" content="@yield('og_image', asset('images/logo.png'))">
     <meta property="og:site_name" content="Logan Airport Transfer">
     <meta property="og:locale" content="en_US">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title"
-        content="@yield('title', 'Logan Airport Transfer | Boston Airport Car Service')">
+    <meta name="twitter:title" content="@yield('title', 'Logan Airport Transfer | Boston Airport Car Service')">
     <meta name="twitter:description"
         content="@yield('meta_description', 'Reliable airport transportation services in Boston and Logan Airport.')">
-    <meta name="twitter:image"
-        content="@yield('og_image', asset('images/logo.png'))">
+    <meta name="twitter:image" content="@yield('og_image', asset('images/logo.png'))">
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
@@ -53,28 +49,21 @@
         rel="stylesheet">
 
     <!-- Font Awesome -->
-    <link rel="stylesheet"
-        href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
-    <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <!-- Bootstrap Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css"
-        rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
 
     <!-- Libraries -->
-    <link href="{{ asset('frontend/lib/animate/animate.min.css') }}"
-        rel="stylesheet">
-    <link href="{{ asset('frontend/lib/owlcarousel/assets/owl.carousel.min.css') }}"
-        rel="stylesheet">
+    <link href="{{ asset('frontend/lib/animate/animate.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('frontend/lib/owlcarousel/assets/owl.carousel.min.css') }}" rel="stylesheet">
 
     <!-- Bootstrap -->
-    <link href="{{ asset('frontend/css/bootstrap.min.css') }}"
-        rel="stylesheet">
+    <link href="{{ asset('frontend/css/bootstrap.min.css') }}" rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link href="{{ asset('frontend/css/style.css') }}"
-        rel="stylesheet">
+    <link href="{{ asset('frontend/css/style.css') }}" rel="stylesheet">
     @yield('schema')
     @stack('styles')
 </head>
@@ -84,9 +73,7 @@
     <!-- Spinner Start -->
     <div id="spinner"
         class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
-        <div class="spinner-border"
-            style="width: 3rem; height: 3rem; color: #C5A059;"
-            role="status">
+        <div class="spinner-border" style="width: 3rem; height: 3rem; color: #C5A059;" role="status">
             <span class="sr-only">Loading...</span>
         </div>
     </div>
@@ -98,8 +85,7 @@
 
     @include('layout.include.footer')
 
-    <a href="#"
-        class="btn btn-secondary btn-lg-square rounded-circle back-to-top">
+    <a href="#" class="btn btn-secondary btn-lg-square rounded-circle back-to-top">
         <i class="fa fa-arrow-up"></i>
     </a>
 
@@ -116,6 +102,32 @@
     <script src="{{ asset('frontend/js/main.js') }}"></script>
 
     @stack('scripts')
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    @if(session('notify'))
+        <script>
+            Swal.fire({
+                icon: "{{ session('notify.type') }}", // success, error, warning
+                title: "{{ session('notify.type') === 'success' ? 'Success!' : 'Error!' }}",
+                text: "{{ session('notify.message') }}",
+                confirmButtonColor: '#B9924B', // আপনার গোল্ড থিম কালার
+                showConfirmButton: true
+            });
+        </script>
+    @endif
+
+    @if(session('booking_success'))
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: "{{ session('booking_success.title') }}",
+                text: "{{ session('booking_success.message') }}",
+                confirmButtonColor: '#B9924B',
+                showConfirmButton: true
+            });
+        </script>
+    @endif
 
 </body>
 

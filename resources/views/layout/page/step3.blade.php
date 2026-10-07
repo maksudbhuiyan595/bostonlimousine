@@ -37,6 +37,7 @@
             position: relative;
             z-index: 1;
             border-radius: 12px;
+            margin-top: 90px;
         }
 
         /* Page Titles */
@@ -45,6 +46,7 @@
             font-size: 1.8rem;
             color: #1F2937;
             margin-bottom: 5px;
+            margin-top: 12px;
         }
 
         .passenger-wrapper .step-text {
