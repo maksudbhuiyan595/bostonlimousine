@@ -3,6 +3,7 @@
 use App\Http\Controllers\AppController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RouteController;
+use App\Http\Controllers\StripeWebhookController;
 use App\Models\BlogPost;
 use App\Models\City;
 use Illuminate\Support\Facades\Route;
@@ -32,3 +33,5 @@ Route::controller(AppController::class)->group(function () {
     Route::post('/book-confirm', 'confirmBooking')->name('book.confirm');
 });
 Route::get('/{slug}', [RouteController::class, 'index'])->name('dynamic.route');
+// Route::post('/stripe/webhook', [StripeWebhookController::class, 'handle'])
+//     ->name('stripe.webhook');

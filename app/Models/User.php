@@ -10,7 +10,9 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable
+use Filament\Models\Contracts\FilamentUser;
+
+class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, HasRoles;
@@ -29,7 +31,10 @@ class User extends Authenticatable
 
     public function canAccessPanel(Panel $panel): bool
     {
-        return $this->hasRole(['super_admin', 'Driver']);
+        // Allow access if they have ANY role, or you can just return true.
+        // Returning true means anyone who logs in can access /admin, 
+        // but their menus will be empty if they don't have permissions.
+        return $this->roles()->exists() || $this->id === 1;
     }
 
     /**

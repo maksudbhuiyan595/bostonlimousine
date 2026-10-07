@@ -8,6 +8,8 @@ class Dashboard extends BaseDashboard
 {
     public static function canAccess(): bool
     {
-        return auth()->user()->hasRole(['super_admin', 'Super Admin']);
+        // Allow all users to access the dashboard. 
+        // We will control widget visibility individually instead.
+        return true;
     }
 }

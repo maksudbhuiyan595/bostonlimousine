@@ -63,13 +63,22 @@ class BookingsTable
                     ->icon('heroicon-m-truck')
                     ->color('success')
                     ->visible(fn() => auth()->user()->hasRole('super_admin'))
-                    ->form([
-                        Select::make('driver_id')
-                            ->label('Select Driver')
-                            ->options(User::role('Driver')->pluck('name', 'id'))
-                            ->searchable()
-                            ->required()
-                    ])
+                    ->form(function () {
+                        $driverOptions = [];
+                        try {
+                            $driverOptions = User::role('Driver')->pluck('name', 'id');
+                        } catch (\Spatie\Permission\Exceptions\RoleDoesNotExist $e) {
+                            $driverOptions = [];
+                        }
+
+                        return [
+                            Select::make('driver_id')
+                                ->label('Select Driver')
+                                ->options($driverOptions)
+                                ->searchable()
+                                ->required()
+                        ];
+                    })
                     ->action(function (Booking $record, array $data): void {
                         $record->update(['driver_id' => $data['driver_id']]);
                     }),
