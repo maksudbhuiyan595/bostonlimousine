@@ -91,26 +91,9 @@ class AdminPanelProvider extends PanelProvider
     {
         Filament::serving(function () {
             if (Auth::check()) {
-                $user = Auth::user();
-                if ($user->hasRole('super_admin') || $user->hasRole('Super Admin')) {
-                    return;
-                }
-                $canViewBookings = $user->can('view_any_booking') || $user->can('view_any_bookings::booking');
-                $canViewBlogs = $user->can('view_any_blog_post') || $user->can('view_any_blog::post');
-
-                $targetUrl = null;
-                if ($canViewBookings && !$canViewBlogs) {
-                    $targetUrl = \App\Filament\Resources\Bookings\BookingResource::getUrl('index');
-                }
-                if ($canViewBlogs && !$canViewBookings) {
-                    $targetUrl = url('/admin/blog-posts');
-                }
-                if ($targetUrl) {
-                    config(['filament.home_url' => $targetUrl]);
-                    if (request()->path() === 'bookings') {
-                        redirect()->to($targetUrl)->send();
-                    }
-                }
+                // We no longer need to force redirect. Drivers will see a personalized dashboard.
+                // Or if you want to set the home URL to the booking page for drivers:
+                // config(['filament.home_url' => \App\Filament\Resources\Bookings\BookingResource::getUrl('index')]);
             }
         });
     }

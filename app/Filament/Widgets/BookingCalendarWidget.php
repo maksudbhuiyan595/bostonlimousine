@@ -22,13 +22,25 @@ class BookingCalendarWidget extends CalendarWidget
     protected bool $useFilamentTimezone = true;
     protected static ?int $sort = 2;
 
+    public static function canView(): bool
+    {
+        return auth()->user()->can('ViewAny:Booking');
+    }
 
     public function getEvents(FetchInfo $fetchInfo): Collection | array
     {
-        return Booking::query()
+        $user = auth()->user();
+        $isDriver = $user->can('DriverPermission') && !$user->hasRole('super_admin');
+
+        $query = Booking::query()
             ->where('pickup_date', '>=', $fetchInfo->start)
-            ->where('pickup_date', '<=', $fetchInfo->end)
-            ->get()
+            ->where('pickup_date', '<=', $fetchInfo->end);
+
+        if ($isDriver) {
+            $query->where('driver_id', $user->id);
+        }
+
+        return $query->get()
             ->map(function (Booking $booking) {
 
                 $timeString = $booking->pickup_time;
@@ -84,7 +96,12 @@ class BookingCalendarWidget extends CalendarWidget
 
                     TextEntry::make('vehicle_type')->label('Vehicle'),
                     TextEntry::make('total_fare')->prefix('$')->label('Total Fare'),
-                     TextEntry::make('flight_number')->label('Flight Number'),
+                    TextEntry::make('flight_number')->label('Flight Number'),
+                    TextEntry::make('driver.name')
+                        ->label('Assigned Driver')
+                        ->badge()
+                        ->color('warning')
+                        ->visible(fn ($record) => $record->driver_id !== null),
                 ])
         ]);
     }

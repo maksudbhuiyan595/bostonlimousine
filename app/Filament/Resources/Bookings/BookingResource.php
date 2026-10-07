@@ -37,8 +37,13 @@ class BookingResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         $query = parent::getEloquentQuery();
-        if (auth()->user()->hasRole('Driver') && !auth()->user()->hasRole('Super Admin')) {
-            $query->where('driver_id', auth()->id());
+        
+        $user = auth()->user();
+        
+        // If the user HAS the 'DriverPermission', they are a driver
+        // and should only see their own bookings.
+        if ($user->can('DriverPermission') && !$user->hasRole('super_admin')) {
+            $query->where('driver_id', $user->id);
         }
 
         return $query;

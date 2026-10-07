@@ -13,6 +13,11 @@ class BookingsChart extends ChartWidget
     protected static ?int $sort = 3;
     // protected int | string | array $columnSpan = 'full';
 
+    public static function canView(): bool
+    {
+        return auth()->user()->can('ViewAny:Booking');
+    }
+
     protected function getType(): string
     {
         return 'line';
@@ -20,12 +25,22 @@ class BookingsChart extends ChartWidget
 
     protected function getData(): array
     {
+        $user = auth()->user();
+        $isDriver = $user->can('DriverPermission') && !$user->hasRole('super_admin');
+
         $dates = collect(range(0, 6))->map(function ($i) {
             return now()->subDays(6 - $i)->format('Y-m-d');
         });
-        $bookings = Booking::query()
+        
+        $query = Booking::query()
             ->select(DB::raw('DATE(created_at) as date'), DB::raw('count(*) as count'))
-            ->where('created_at', '>=', now()->subDays(7)->startOfDay())
+            ->where('created_at', '>=', now()->subDays(7)->startOfDay());
+            
+        if ($isDriver) {
+            $query->where('driver_id', $user->id);
+        }
+
+        $bookings = $query
             ->groupBy('date')
             ->pluck('count', 'date')
             ->toArray();
