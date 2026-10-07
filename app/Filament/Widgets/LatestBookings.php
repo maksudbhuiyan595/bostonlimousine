@@ -15,12 +15,23 @@ class LatestBookings extends TableWidget
     // protected int | string | array $columnSpan = 'full';
     protected static ?int $sort = 4;
 
+    public static function canView(): bool
+    {
+        return auth()->user()->can('ViewAny:Booking');
+    }
+
     public function table(Table $table): Table
     {
+        $user = auth()->user();
+        $isDriver = $user->can('DriverPermission') && !$user->hasRole('super_admin');
+
+        $query = Booking::query()->latest()->limit(5);
+        if ($isDriver) {
+            $query->where('driver_id', $user->id);
+        }
+
         return $table
-            ->query(
-                Booking::query()->latest()->limit(5)
-            )
+            ->query($query)
             ->columns([
                 TextColumn::make('booking_no')->label('Booking #'),
                 TextColumn::make('passenger_name'),
