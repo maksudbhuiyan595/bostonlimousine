@@ -316,7 +316,8 @@ class ManageSettings extends Page
 
         // --- Fixed Charges ---
         $settings->child_seat_fee = $data['child_seat_fee'] ?? 0; //infant seat
-        $settings->regular_Seat_rules = $data['regular_Seat_rules'] ?? 0;        $settings->booster_seat_fee = $data['booster_seat_fee'] ?? 0;
+        $settings->regular_Seat_rules = $data['regular_Seat_rules'] ?? 0;
+        $settings->booster_seat_fee = $data['booster_seat_fee'] ?? 0;
         $settings->stopover_fee = $data['stopover_fee'] ?? 0;
         $settings->luggage_fee = $data['luggage_fee'] ?? 0;
 
