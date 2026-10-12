@@ -43,19 +43,16 @@
     39 => 'Flowframe\\Trend\\TrendServiceProvider',
     40 => 'Guava\\Calendar\\CalendarServiceProvider',
     41 => 'Kirschbaum\\PowerJoins\\PowerJoinsServiceProvider',
-    42 => 'Laravel\\Pail\\PailServiceProvider',
-    43 => 'Laravel\\Sail\\SailServiceProvider',
-    44 => 'Laravel\\Tinker\\TinkerServiceProvider',
-    45 => 'Livewire\\LivewireServiceProvider',
-    46 => 'Mastani\\GoogleStaticMap\\GoogleStaticMapServiceProvider',
-    47 => 'Carbon\\Laravel\\ServiceProvider',
-    48 => 'NunoMaduro\\Collision\\Adapters\\Laravel\\CollisionServiceProvider',
-    49 => 'Termwind\\Laravel\\TermwindServiceProvider',
-    50 => 'RyanChandler\\BladeCaptureDirective\\BladeCaptureDirectiveServiceProvider',
-    51 => 'Spatie\\Permission\\PermissionServiceProvider',
-    52 => 'Spatie\\LaravelSettings\\LaravelSettingsServiceProvider',
-    53 => 'App\\Providers\\AppServiceProvider',
-    54 => 'App\\Providers\\Filament\\AdminPanelProvider',
+    42 => 'Laravel\\Tinker\\TinkerServiceProvider',
+    43 => 'Livewire\\LivewireServiceProvider',
+    44 => 'Mastani\\GoogleStaticMap\\GoogleStaticMapServiceProvider',
+    45 => 'Carbon\\Laravel\\ServiceProvider',
+    46 => 'Termwind\\Laravel\\TermwindServiceProvider',
+    47 => 'RyanChandler\\BladeCaptureDirective\\BladeCaptureDirectiveServiceProvider',
+    48 => 'Spatie\\Permission\\PermissionServiceProvider',
+    49 => 'Spatie\\LaravelSettings\\LaravelSettingsServiceProvider',
+    50 => 'App\\Providers\\AppServiceProvider',
+    51 => 'App\\Providers\\Filament\\AdminPanelProvider',
   ),
   'eager' => 
   array (
@@ -88,17 +85,15 @@
     26 => 'Flowframe\\Trend\\TrendServiceProvider',
     27 => 'Guava\\Calendar\\CalendarServiceProvider',
     28 => 'Kirschbaum\\PowerJoins\\PowerJoinsServiceProvider',
-    29 => 'Laravel\\Pail\\PailServiceProvider',
-    30 => 'Livewire\\LivewireServiceProvider',
-    31 => 'Mastani\\GoogleStaticMap\\GoogleStaticMapServiceProvider',
-    32 => 'Carbon\\Laravel\\ServiceProvider',
-    33 => 'NunoMaduro\\Collision\\Adapters\\Laravel\\CollisionServiceProvider',
-    34 => 'Termwind\\Laravel\\TermwindServiceProvider',
-    35 => 'RyanChandler\\BladeCaptureDirective\\BladeCaptureDirectiveServiceProvider',
-    36 => 'Spatie\\Permission\\PermissionServiceProvider',
-    37 => 'Spatie\\LaravelSettings\\LaravelSettingsServiceProvider',
-    38 => 'App\\Providers\\AppServiceProvider',
-    39 => 'App\\Providers\\Filament\\AdminPanelProvider',
+    29 => 'Livewire\\LivewireServiceProvider',
+    30 => 'Mastani\\GoogleStaticMap\\GoogleStaticMapServiceProvider',
+    31 => 'Carbon\\Laravel\\ServiceProvider',
+    32 => 'Termwind\\Laravel\\TermwindServiceProvider',
+    33 => 'RyanChandler\\BladeCaptureDirective\\BladeCaptureDirectiveServiceProvider',
+    34 => 'Spatie\\Permission\\PermissionServiceProvider',
+    35 => 'Spatie\\LaravelSettings\\LaravelSettingsServiceProvider',
+    36 => 'App\\Providers\\AppServiceProvider',
+    37 => 'App\\Providers\\Filament\\AdminPanelProvider',
   ),
   'deferred' => 
   array (
@@ -256,8 +251,6 @@
     'validator' => 'Illuminate\\Validation\\ValidationServiceProvider',
     'validation.presence' => 'Illuminate\\Validation\\ValidationServiceProvider',
     'Illuminate\\Contracts\\Validation\\UncompromisedVerifier' => 'Illuminate\\Validation\\ValidationServiceProvider',
-    'Laravel\\Sail\\Console\\InstallCommand' => 'Laravel\\Sail\\SailServiceProvider',
-    'Laravel\\Sail\\Console\\PublishCommand' => 'Laravel\\Sail\\SailServiceProvider',
     'command.tinker' => 'Laravel\\Tinker\\TinkerServiceProvider',
   ),
   'when' => 
@@ -299,9 +292,6 @@
     array (
     ),
     'Illuminate\\Validation\\ValidationServiceProvider' => 
-    array (
-    ),
-    'Laravel\\Sail\\SailServiceProvider' => 
     array (
     ),
     'Laravel\\Tinker\\TinkerServiceProvider' => 
