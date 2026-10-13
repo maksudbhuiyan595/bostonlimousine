@@ -66,6 +66,7 @@
     <link href="{{ asset('frontend/css/style.css') }}" rel="stylesheet">
     @yield('schema')
     @stack('styles')
+    
 </head>
 
 <body>
