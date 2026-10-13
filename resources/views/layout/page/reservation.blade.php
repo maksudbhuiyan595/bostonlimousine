@@ -1,63 +1,60 @@
 @extends('layout.app')
-
-@php
-    // JSON রেসপন্স অনুযায়ী ডেটা এক্সট্র্যাক্ট এবং ফলব্যাক হ্যান্ডলিং
-    $pageTitle = $main_page->meta_title ?? $main_page->title ?? 'Reserve Boston Taxi to Logan Airport, CT, RI, NH, VT, NY';
-    $pageDesc = $main_page->meta_description ?? $main_page->hero_subheading ?? 'Book reliable Boston taxi and transfer services to Logan Airport and surrounding states.';
-
-    // আপনার JSON এর পাথ অনুযায়ী (যেমন: main-pages/covers/filename.jpg) URL জেনারেট করা হচ্ছে
-    $coverImageUrl = ($main_page && $main_page->cover_image && Storage::disk('public')->exists($main_page->cover_image))
-        ? Storage::disk('public')->url($main_page->cover_image)
-        : asset('images/bg.jpg');
-@endphp
-
-{{-- SEO Meta Tags --}}
-@section('title', $pageTitle)
-@section('meta_description', $pageDesc)
-
-{{-- 2. SCHEMA SECTION --}}
-@section('schema')
     @php
-        $schemaData = [
-            "@context" => "https://schema.org",
-            "@type" => "WebPage",
-            "name" => $pageTitle,
-            "url" => url()->current(),
-            "image" => $coverImageUrl,
-            "description" => $pageDesc,
-            "telephone" => "+1-857-777-2125",
-            "priceRange" => "$$",
-            "provider" => [
-                "@type" => "LocalBusiness",
-                "name" => "Logan Airport Transfer",
-                "image" => $coverImageUrl,
-                "telephone" => "+1-857-777-2125",
-                "email" => "loganairporttransfer@gmail.com",
-                "address" => [
-                    "@type" => "PostalAddress",
-                    "streetAddress" => "12 Highland Ave",
-                    "addressLocality" => "Woburn",
-                    "addressRegion" => "MA",
-                    "postalCode" => "01801",
-                    "addressCountry" => "US"
-                ]
-            ],
-            "areaServed" => [
-                ["@type" => "City", "name" => "Woburn"],
-                ["@type" => "City", "name" => "Boston"],
-                ["@type" => "Airport", "name" => "Logan International Airport"],
-                ["@type" => "City", "name" => "Cambridge"]
-            ],
-            "author" => [
-                "@type" => "Organization",
-                "name" => "Logan Airport Transfer"
-            ]
-        ];
+        $pageTitle = $main_page->meta_title ?? $main_page->title ?? 'Reserve Boston Taxi to Logan Airport, CT, RI, NH, VT, NY';
+        $pageDesc = $main_page->meta_description ?? $main_page->hero_subheading ?? 'Book reliable Boston taxi and transfer services to Logan Airport and surrounding states.';
+
+        $coverImageUrl = ($main_page && $main_page->cover_image && Storage::disk('public')->exists($main_page->cover_image))
+            ? Storage::disk('public')->url($main_page->cover_image)
+            : asset('images/bg.jpg');
     @endphp
-    <script type="application/ld+json">
-        {!! json_encode($schemaData, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) !!}
-    </script>
-@endsection
+
+    {{-- SEO Meta Tags --}}
+    @section('title', $pageTitle)
+    @section('meta_description', $pageDesc)
+
+    {{-- 2. SCHEMA SECTION --}}
+    @section('schema')
+        @php
+            $schemaData = [
+                "@context" => "https://schema.org",
+                "@type" => "WebPage",
+                "name" => $pageTitle,
+                "url" => url()->current(),
+                "image" => $coverImageUrl,
+                "description" => $pageDesc,
+                "telephone" => "+1-857-777-2125",
+                "priceRange" => "$$",
+                "provider" => [
+                    "@type" => "LocalBusiness",
+                    "name" => "Logan Airport Transfer",
+                    "image" => $coverImageUrl,
+                    "telephone" => "+1-857-777-2125",
+                    "email" => "loganairporttransfer@gmail.com",
+                    "address" => [
+                        "@type" => "PostalAddress",
+                        "streetAddress" => "12 Highland Ave",
+                        "addressLocality" => "Woburn",
+                        "addressRegion" => "MA",
+                        "postalCode" => "01801",
+                        "addressCountry" => "US"
+                    ]
+                ],
+                "areaServed" => [
+                    ["@type" => "City", "name" => "Woburn"],
+                    ["@type" => "City", "name" => "Boston"],
+                    ["@type" => "Airport", "name" => "Logan International Airport"],
+                    ["@type" => "City", "name" => "Cambridge"]
+                ],
+                "author" => [
+                    "@type" => "Organization",
+                    "name" => "Logan Airport Transfer"
+                ]
+            ];
+        @endphp
+        <script type="application/ld+json">
+            {!! json_encode($schemaData, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) !!}
+        </script>
+    @endsection
 
 
     <style>

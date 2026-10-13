@@ -30,18 +30,6 @@
         font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
     }
 
-    .hero-section {
-        background-image: linear-gradient(rgba(15, 23, 29, 0.85), rgba(15, 23, 29, 0.85)),
-                              url('images/new-8.webp');
-        background-size: cover;
-        background-position: center;
-        background-attachment: fixed;
-        background-repeat: no-repeat;
-        font-family: 'Inter', system-ui, -apple-system, sans-serif;
-        color: var(--text-light);
-        min-height: 100vh;
-    }
-
     .reservation-card {
         background: rgba(26, 36, 44, 0.95);
         backdrop-filter: blur(10px);
@@ -52,19 +40,19 @@
     .hero-section {
         padding: 28px 0 50px 0;
         position: relative;
-        margin-top: 80px;
+        z-index: 100 !important;
     }
 
 
     /* ---------- COMPACT PREMIUM AMBER CARD ---------- */
     .reservation-card {
         background: var(--bg-card);
-        border-radius: 28px;
+        border-radius: 9px;
         box-shadow: 0 25px 42px -18px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(185, 146, 75, 0.25);
         border: none;
         border-top: 4px solid var(--amber-primary);
         width: 100%;
-        z-index: 100;
+        z-index: 9999 !important;
         transition: all 0.3s ease;
         overflow: hidden;
     }
@@ -75,15 +63,15 @@
     }
 
     .form-header {
-        background: linear-gradient(135deg, var(--amber-primary) 0%, var(--amber-dark) 100%);
+        /* background: linear-gradient(135deg, var(--amber-primary) 0%, var(--amber-dark) 100%); */
         color: #0A0D12;
-        padding: 8px 14px;
+        padding: 14px 14px;
         text-align: center;
     }
 
     .form-header h3 {
         margin: 0;
-        font-size: 1rem;
+        font-size: 1.5rem;
         font-weight: 800;
         letter-spacing: -0.2px;
         color: #fff;
@@ -92,14 +80,14 @@
 
     .form-header p {
         margin: 0;
-        font-size: 0.55rem;
+        font-size: 0.65rem;
         font-weight: 600;
         opacity: 0.9;
         color: #fff;
     }
 
     .booking-inner {
-        padding: 12px 16px 16px 16px;
+        padding: 16px 16px 16px 16px;
     }
 
     /* ========== COMPACT INPUTS - REDUCED HEIGHT ========== */
@@ -338,7 +326,7 @@
     /* MAP SIDEBAR */
     .map-sidebar-card {
         background: #FFFFFF;
-        border-radius: 28px;
+        border-radius: 9px;
         border: 1px solid rgba(0, 0, 0, 0.06);
         overflow: hidden;
         box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.2);
@@ -369,7 +357,7 @@
     }
 
     #map {
-        height: 240px;
+        height: 252px;
         width: 100%;
         background: #EAF0F5;
     }
@@ -486,6 +474,7 @@
     @media (min-width: 992px) {
         .form-column {
             position: relative;
+
         }
 
         .reservation-card {
@@ -495,7 +484,6 @@
             width: calc(100% - 24px);
         }
     }
-
     /* Flatpickr Date Input Fix */
     #date,
     #date.form-control,
@@ -614,7 +602,7 @@
     <div class="container">
         <div class="text-center mb-3">
             <h1 class="display-6 fw-bold"
-                style="color: #FFFFFF; text-shadow: 0 2px 8px rgba(0,0,0,0.3); letter-spacing: -0.6px; font-size: 1.6rem;">
+                style="color: #000;letter-spacing: -0.6px; font-size: 1.9rem;">
                 <i class="fas fa-plane-departure me-2" style="color: #B9924B;"></i>
                 Logan Airport Transfer <span style="color: #B9924B;">| Boston Car Service</span>
             </h1>
