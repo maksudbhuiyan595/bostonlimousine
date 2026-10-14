@@ -558,7 +558,7 @@
                 {{-- COLUMN 1: Vehicle Card --}}
                 <div class="col-lg-4">
                     <div class="vehicle-card-dark">
-                        <img src="{{ (!empty($defaultVehicle) && !empty($defaultVehicle['image'])) ? asset($defaultVehicle['image']) : asset('images/car-3.png') }}"
+                        <img src="{{ (!empty($defaultVehicle) && !empty($defaultVehicle['image'])) ? asset('storage/'. $defaultVehicle['image']) : asset('images/car-3.png') }}"
                             id="disp_img" class="v-img-main"
                             onerror="this.onerror=null;this.src='{{ asset('images/car-3.png') }}';">
                         <div class="v-title-main">
