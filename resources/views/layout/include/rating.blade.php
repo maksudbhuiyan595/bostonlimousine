@@ -2,13 +2,11 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <style>
-    /* বডি ওভারফ্লো সম্পূর্ণ বন্ধ */
     html, body {
         max-width: 100%;
         overflow-x: hidden;
     }
 
-    /* রেটিংস সেকশন */
     .ratings-section {
         background: #FFFFFF;
         border: none !important;
@@ -17,13 +15,13 @@
         box-sizing: border-box;
     }
 
-    /* গ্রিড কনটেইনার - সব স্ক্রিনেই বাধ্যতামূলক ১ সারিতে (repeat(4, 1fr)) */
+
     .ratings-container {
         width: 100%;
         max-width: 1320px;
         margin: 0 auto;
         display: grid;
-        grid-template-columns: repeat(4, 1fr); /* সবসময় ১ সারিতে থাকবে */
+        grid-template-columns: repeat(4, 1fr);
         align-items: center;
         justify-content: space-between;
         gap: 40px; /* ডেস্কটপে ৪০ পিক্সেল গ্যাপ */
@@ -39,7 +37,7 @@
         color: #1F2937;
         text-align: center;
         width: 100%;
-        min-width: 0; /* কনটেন্ট উপচে পড়া প্রতিরোধ করে */
+        min-width: 0;
         box-sizing: border-box;
         transition: transform 0.25s ease;
     }
@@ -270,6 +268,16 @@
         .brand-tripadvisor, .brand-trustpilot { font-size: 8.5px; }
         .badge-info { font-size: 6.5px; }
         .sub-badge-title { font-size: 6.5px; }
+    }
+        @media (min-width: 1400px) {
+        .container,
+        .container-lg,
+        .container-md,
+        .container-sm,
+        .container-xl,
+        .container-xxl {
+            max-width: 1320px !important;
+        }
     }
 </style>
 

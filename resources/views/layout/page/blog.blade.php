@@ -48,8 +48,8 @@
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
 
     .blog-section {
-        padding: 80px 0;
-        background: linear-gradient(135deg, #F9FAFB 0%, #F0F4F8 100%);
+        /* padding: 80px 0; */
+        /* background: linear-gradient(135deg, #F9FAFB 0%, #F0F4F8 100%); */
         font-family: 'Inter', sans-serif;
         margin-top: 20px;
     }

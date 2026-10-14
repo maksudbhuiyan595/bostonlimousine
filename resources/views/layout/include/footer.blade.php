@@ -54,7 +54,7 @@
     transform: none !important;
 }
 
-/* শুধুমাত্র টেক্সট কালার গোল্ড হবে (আর কিছুই পরিবর্তন হবে না) */
+
 .footer-item a:hover,
 .footer-item a:focus,
 .footer-item a:hover span {
