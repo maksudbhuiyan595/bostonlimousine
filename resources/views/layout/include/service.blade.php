@@ -131,6 +131,16 @@
         .cta-group { flex-direction: column; }
         .btn-primary, .btn-outline { width: 100%; justify-content: center; }
     }
+    @media (min-width: 1400px) {
+        .container,
+        .container-lg,
+        .container-md,
+        .container-sm,
+        .container-xl,
+        .container-xxl {
+            max-width: 1320px !important;
+        }
+    }
 </style>
 
 <section class="logan-transfer-section">

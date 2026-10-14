@@ -592,7 +592,7 @@
 
     @media (min-width: 992px) {
         .hero-section {
-            padding-bottom: 100px;
+            padding-bottom: 45px;
         }
     }
 </style>
@@ -601,11 +601,14 @@
 <section class="hero-section">
     <div class="container">
         <div class="text-center mb-3">
-            <h1 class="display-6 fw-bold"
-                style="color: #000;letter-spacing: -0.6px; font-size: 1.9rem;">
-                <i class="fas fa-plane-departure me-2" style="color: #B9924B;"></i>
-                Logan Airport Transfer <span style="color: #B9924B;">| Boston Car Service</span>
-            </h1>
+            @if (request()->routeIs('home'))
+                <h1 class="display-6 fw-bold"
+                    style="color: #000; letter-spacing: -0.6px; font-size: 1.9rem;">
+                    <i class="fas fa-plane-departure me-2" style="color: #B9924B;"></i>
+                    Logan Airport Transfer
+                    <span style="color: #B9924B;">| Boston Car Service</span>
+                </h1>
+            @endif
         </div>
 
         <div class="row align-items-stretch">
