@@ -846,7 +846,8 @@
                         onclick="updateVehicle({{ json_encode($option) }})">
 
                         <div class="vr-img-box">
-                            <img src="{{ asset($option['image'] ?? 'images/home1.jpeg') }}" class="vr-img"
+                            <img src="{{ asset('storage/' . ($option['image'] ?? 'images/home1.jpeg')) }}"
+                                class="vr-img"
                                 alt="{{ $option['name'] ?? 'Vehicle' }}">
                         </div>
 
