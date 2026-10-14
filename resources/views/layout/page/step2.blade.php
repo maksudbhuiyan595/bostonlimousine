@@ -905,7 +905,7 @@
 
             // 3. Update Left Col (Card & Payment)
             const dispImg = document.getElementById('disp_img');
-            if (dispImg) dispImg.src = "{{ asset('') }}" + (data.image || 'images/home1.jpeg');
+            if (dispImg) dispImg.src = "{{ asset('storage/') }}" + (data.image || 'images/home1.jpeg');
 
             const dispName = document.getElementById('disp_name');
             if (dispName) dispName.innerText = data.name || 'Vehicle';
