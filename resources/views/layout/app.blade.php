@@ -92,6 +92,8 @@
     <script src="{{ asset('frontend/lib/owlcarousel/owl.carousel.min.js') }}"></script>
 
     <script src="{{ asset('frontend/js/main.js') }}"></script>
+    <!-- app.blade.php তে main.js এর লাইনটি এভাবে লিখুন -->
+<script src="{{ asset('frontend/js/main.js') }}?v={{ time() }}"></script>
 
     @stack('scripts')
 

@@ -1,28 +1,26 @@
 <!-- Font Awesome CDN -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
 <style>
 :root {
-    --brand-gold: #C5A059;
-    --brand-gold-dark: #A8883E;
-    --brand-gold-light: #D4B87A;
-    --brand-dark: #1A1A1A;
+    --brand-gold: #B9924B;
+    --brand-gold-dark: #987535;
+    --brand-dark: #121824;
     --brand-white: #FFFFFF;
-    --nav-height: 90px;
-    --nav-height-mobile: 75px;
+    --nav-height: 85px;
+    --nav-height-mobile: 72px;
 }
 
-/* নেভবারের ফিক্সড পজিশনের কারণে কনটেন্ট নিচে নামানো */
 body {
-    padding-top: var(--nav-height);
+    padding-top: var(--nav-height) !important;
 }
 @media (max-width: 991.98px) {
     body {
-        padding-top: var(--nav-height-mobile);
+        padding-top: var(--nav-height-mobile) !important;
     }
 }
 
-/* Base Navbar Styles */
+/* Base Navbar */
 .nav-bar {
     position: fixed;
     top: 0;
@@ -33,47 +31,51 @@ body {
     display: flex;
     align-items: center;
     z-index: 1030;
-    transition: background 0.3s ease, box-shadow 0.3s ease, height 0.3s ease;
+    border-bottom: 1px solid rgba(185, 146, 75, 0.25);
+    transition: background 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Scrolled State */
 .nav-bar.is-scrolled {
-    background: rgba(26, 26, 26, 0.96) !important;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4) !important;
+    background: rgba(18, 24, 36, 0.98) !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.45) !important;
 }
 
 .logo-wrapper .logo-img {
-    height: 65px;
+    height: 55px;
     width: auto;
     object-fit: contain;
-    transition: height 0.3s ease;
 }
 
-/* Desktop Navigation (>= 992px) */
+/* ========================================================
+   DESKTOP NAVIGATION (>= 992px)
+======================================================== */
 @media (min-width: 992px) {
-    .navbar-collapse-custom {
+    .desktop-nav-wrap {
         display: flex !important;
         justify-content: space-between;
         align-items: center;
         width: 100%;
     }
-    .navbar-nav {
+    .desktop-nav-list {
         display: flex;
+        flex-direction: row;
         align-items: center;
-        gap: 4px;
-        margin-bottom: 0;
+        gap: 6px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
     }
-    .nav-link {
+    .desk-nav-link {
         color: var(--brand-white) !important;
         font-weight: 500;
-        padding: 8px 12px;
+        font-size: 0.93rem;
+        padding: 8px 12px !important;
         transition: color 0.3s ease;
         position: relative;
         white-space: nowrap;
+        text-decoration: none !important;
     }
-    .nav-link::after {
+    .desk-nav-link::after {
         content: '';
         position: absolute;
         bottom: 0;
@@ -85,168 +87,176 @@ body {
         transform-origin: right;
         transition: transform 0.3s cubic-bezier(0.86, 0, 0.07, 1);
     }
-    .nav-link:hover::after,
-    .nav-link.active::after {
+    .desk-nav-link:hover::after,
+    .desk-nav-link.active::after {
         transform: scaleX(1);
         transform-origin: left;
     }
-    .nav-link:hover,
-    .nav-link.active {
+    .desk-nav-link:hover,
+    .desk-nav-link.active {
         color: var(--brand-gold) !important;
     }
+    .mobile-drawer-box,
+    .mobile-drawer-overlay {
+        display: none !important;
+    }
 }
 
-/* ল্যাপটপ ও মিডিয়াম ডেস্কটপ অপটিমাইজেশন (992px - 1199px) */
 @media (min-width: 992px) and (max-width: 1199.98px) {
-    .nav-link {
-        font-size: 0.8rem;
-        padding: 6px 5px !important;
-    }
-    .desktop-call-btn {
-        padding: 7px 12px !important;
-        font-size: 0.8rem !important;
-        gap: 5px;
-    }
-    .logo-wrapper .logo-img {
-        height: 52px;
-    }
+    .desk-nav-link { font-size: 0.82rem; padding: 6px 6px !important; }
+    .desktop-call-btn { padding: 7px 14px !important; font-size: 0.82rem !important; }
+    .logo-wrapper .logo-img { height: 48px; }
 }
 
-/* Mobile & Tablet Styles (< 992px) */
+/* ========================================================
+   MOBILE NAVBAR (< 992px)
+======================================================== */
 @media (max-width: 991.98px) {
-    .nav-bar,
-    .nav-bar.is-scrolled {
+    .nav-bar {
         height: var(--nav-height-mobile) !important;
     }
-    .nav-bar .logo-img,
-    .nav-bar.is-scrolled .logo-img {
-        height: 48px;
+    .nav-bar .logo-img {
+        height: 44px;
     }
-
-    .navbar-collapse-custom {
-        position: fixed;
-        top: 0;
-        right: -100%;
-        width: 85%;
-        max-width: 360px;
-        height: 100vh;
-        height: 100dvh;
-        background: #141414;
-        transition: right 0.35s cubic-bezier(0.23, 1, 0.32, 1);
-        z-index: 9999;
-        display: flex !important;
-        flex-direction: column;
-        box-shadow: -5px 0 25px rgba(0, 0, 0, 0.6);
-        overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
-    }
-
-    .navbar-collapse-custom.show {
-        right: 0;
-    }
-
-    .mobile-menu-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 16px 20px;
-        border-bottom: 1px solid rgba(197, 160, 89, 0.2);
-        background: #0f0f0f;
-        position: sticky;
-        top: 0;
-        z-index: 10;
-    }
-
-    .navbar-nav {
-        padding: 15px 12px !important;
-    }
-
-    .navbar-nav .nav-item {
-        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    }
-
-    .nav-link {
-        color: rgba(255, 255, 255, 0.9) !important;
-        font-size: 1rem;
-        padding: 12px 14px !important;
-        display: block;
-        font-weight: 500;
-    }
-
-    .nav-link.active,
-    .nav-link:hover {
-        color: var(--brand-gold) !important;
-        background: rgba(197, 160, 89, 0.08);
-        border-radius: 6px;
-    }
-
-    .mobile-call-wrapper {
-        padding: 20px;
-        margin-top: auto;
+    .desktop-nav-wrap {
+        display: none !important;
     }
 }
 
-/* ব্যাকড্রপ ওভারলে */
-.menu-backdrop {
+/* ========================================================
+   STANDALONE MOBILE DRAWER (PURE CSS & ZERO CONFLICT)
+======================================================== */
+.mobile-drawer-box {
     position: fixed;
     top: 0;
-    left: 0;
+    right: -100%;
+    width: 82%;
+    max-width: 320px;
+    height: 100vh;
+    height: 100dvh;
+    background: #0f1622 !important;
+    z-index: 2147483647 !important;
+    display: flex;
+    flex-direction: column;
+    box-shadow: -8px 0 30px rgba(0, 0, 0, 0.85);
+    transition: right 0.3s ease-in-out;
+    overflow-y: auto;
+}
+
+.mobile-drawer-box.is-open {
+    right: 0 !important;
+}
+
+.mobile-drawer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid rgba(185, 146, 75, 0.25);
+    background: #080c14;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}
+
+.mobile-drawer-nav {
+    list-style: none;
+    padding: 15px 12px;
+    margin: 0;
+}
+
+.mobile-drawer-item {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    margin-bottom: 3px;
+}
+
+.mobile-nav-click {
+    color: #ffffff !important;
+    font-size: 1.05rem !important;
+    padding: 14px 16px !important;
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 8px;
+    font-weight: 500;
+    text-decoration: none !important;
+    cursor: pointer !important;
+    background: transparent;
+    border: none;
+    width: 100%;
+    text-align: left;
+}
+
+.mobile-nav-click.active {
+    color: var(--brand-gold) !important;
+    background: rgba(185, 146, 75, 0.15) !important;
+    border-left: 3px solid var(--brand-gold);
+}
+
+.mobile-drawer-footer {
+    padding: 20px;
+    margin-top: auto;
+    background: #080c14;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Standalone Overlay */
+.mobile-drawer-overlay {
+    position: fixed;
+    inset: 0;
     width: 100vw;
     height: 100vh;
     background: rgba(0, 0, 0, 0.65);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    z-index: 9998;
+    z-index: 2147483640 !important;
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.3s ease, visibility 0.3s ease;
 }
-.menu-backdrop.show {
+
+.mobile-drawer-overlay.is-open {
     opacity: 1;
     visibility: visible;
 }
 
-/* বাটন ও ইন্টারেক্টিভ এলিমেন্ট */
+/* Buttons */
 .premium-toggler {
     background: transparent;
     color: var(--brand-gold) !important;
-    border: 1px solid rgba(197, 160, 89, 0.4) !important;
+    border: 1px solid rgba(185, 146, 75, 0.45) !important;
     border-radius: 8px;
-    padding: 7px 11px;
+    padding: 6px 11px;
     font-size: 1.15rem;
     cursor: pointer;
 }
+
 .mobile-phone-btn {
     background: linear-gradient(135deg, var(--brand-gold), var(--brand-gold-dark));
     color: #FFFFFF !important;
     padding: 7px 14px;
     border-radius: 50px;
-    text-decoration: none;
+    text-decoration: none !important;
     font-size: 0.78rem;
     font-weight: 700;
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: 6px;
 }
+
 .desktop-call-btn {
     background: linear-gradient(135deg, var(--brand-gold), var(--brand-gold-dark));
     color: #FFFFFF !important;
-    padding: 9px 18px;
+    padding: 9px 20px;
     border-radius: 50px;
-    text-decoration: none;
+    text-decoration: none !important;
     font-weight: 700;
     font-size: 0.9rem;
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: 8px;
     white-space: nowrap;
-    transition: 0.3s;
+    transition: all 0.3s ease;
 }
-.desktop-call-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(197, 160, 89, 0.4);
-    color: #FFFFFF !important;
-}
+
 .close-menu-btn {
     background: transparent;
     border: 1px solid var(--brand-gold);
@@ -258,148 +268,195 @@ body {
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: 0.3s;
-}
-.close-menu-btn:hover {
-    transform: rotate(90deg);
-    background: var(--brand-gold);
-    color: white;
 }
 </style>
 
 <!-- MAIN NAVBAR -->
 <header class="container-fluid nav-bar px-0 px-lg-4" id="mainNavbar">
     <div class="container-xxl h-100">
-        <nav class="navbar navbar-expand-lg p-0 h-100">
-            <!-- Brand Logo -->
-            <a href="{{ url('/') }}" class="navbar-brand p-0 premium-logo">
+        <div class="d-flex justify-content-between align-items-center h-100 w-100">
+
+            <a href="{{ url('/') }}" class="navbar-brand p-0 m-0">
                 <div class="logo-wrapper">
-                    <img src="{{ asset('images/logo.png') }}" alt="Boston Limousine" class="logo-img" id="mainLogo">
+                    <img src="{{ asset('images/logo.png') }}" alt="Logan Airport Transfer" class="logo-img">
                 </div>
             </a>
 
-            <!-- Mobile Buttons (Phone & Hamburger) -->
+            <!-- Mobile Buttons -->
             <div class="d-flex align-items-center gap-2 d-lg-none">
                 <a href="tel:+18577772125" class="mobile-phone-btn" aria-label="Call directly">
                     <i class="fas fa-phone-alt"></i>
                     <span>857-777-2125</span>
                 </a>
-                <button class="navbar-toggler premium-toggler" type="button" id="customMenuBtn" aria-expanded="false" aria-label="Open menu">
+                <button type="button" class="premium-toggler" id="openMobileDrawerBtn" aria-label="Open menu">
                     <i class="fas fa-bars"></i>
                 </button>
             </div>
 
-            <!-- Navbar Menu List -->
-            <div class="navbar-collapse-custom" id="navbarCollapse">
-                <div class="mobile-menu-header d-lg-none">
-                    <div class="menu-logo">
-                        <img src="{{ asset('images/logo.png') }}" alt="Logo" height="38">
-                    </div>
-                    <button class="close-menu-btn" id="closeMenuBtn" aria-label="Close menu">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-
-                <ul class="navbar-nav mx-auto">
-                    <li class="nav-item">
-                        <a href="{{ route('home') }}" class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ route('reservation') }}" class="nav-link {{ request()->routeIs('reservation') ? 'active' : '' }}">Reservation</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ route('minivan') }}" class="nav-link {{ request()->routeIs('minivan') ? 'active' : '' }}">Minivan</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ route('long.distance') }}" class="nav-link {{ request()->routeIs('long.distance') ? 'active' : '' }}">Long Distance</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ route('child.seat') }}" class="nav-link {{ request()->routeIs('child.seat') ? 'active' : '' }}">Child Seat</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ route('services') }}" class="nav-link {{ request()->routeIs('services') ? 'active' : '' }}">Services</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ route('blogs') }}" class="nav-link {{ request()->routeIs('blogs') ? 'active' : '' }}">Blogs</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ route('contact') }}" class="nav-link {{ request()->routeIs('contact') ? 'active' : '' }}">Contact</a>
-                    </li>
+            <!-- Desktop Menu Structure -->
+            <div class="desktop-nav-wrap">
+                <ul class="desktop-nav-list mx-auto">
+                    <li><a href="{{ route('home') }}" class="desk-nav-link {{ request()->routeIs('home') ? 'active' : '' }}">Home</a></li>
+                    <li><a href="{{ route('reservation') }}" class="desk-nav-link {{ request()->routeIs('reservation') ? 'active' : '' }}">Reservation</a></li>
+                    <li><a href="{{ route('minivan') }}" class="desk-nav-link {{ request()->routeIs('minivan') ? 'active' : '' }}">Minivan</a></li>
+                    <li><a href="{{ route('long.distance') }}" class="desk-nav-link {{ request()->routeIs('long.distance') ? 'active' : '' }}">Long Distance</a></li>
+                    <li><a href="{{ route('child.seat') }}" class="desk-nav-link {{ request()->routeIs('child.seat') ? 'active' : '' }}">Child Seat</a></li>
+                    <li><a href="{{ route('services') }}" class="desk-nav-link {{ request()->routeIs('services') ? 'active' : '' }}">Services</a></li>
+                    <li><a href="{{ route('blogs') }}" class="desk-nav-link {{ request()->routeIs('blogs') ? 'active' : '' }}">Blogs</a></li>
+                    <li><a href="{{ route('contact') }}" class="desk-nav-link {{ request()->routeIs('contact') ? 'active' : '' }}">Contact</a></li>
                 </ul>
 
-                <!-- Desktop Call Button -->
-                <a href="tel:+18577772125" class="desktop-call-btn d-none d-lg-flex">
+                <a href="tel:+18577772125" class="desktop-call-btn">
                     <i class="fas fa-phone-alt"></i>
                     <span>857-777-2125</span>
                 </a>
-
-                <!-- Mobile Inside Drawer Call Button -->
-                <div class="mobile-call-wrapper d-lg-none">
-                    <a href="tel:+18577772125" class="desktop-call-btn w-100 justify-content-center">
-                        <i class="fas fa-phone-alt"></i>
-                        <span>Call: 857-777-2125</span>
-                    </a>
-                </div>
             </div>
-        </nav>
+        </div>
     </div>
 </header>
 
-<!-- Mobile Overlay Backdrop -->
-<div class="menu-backdrop" id="menuBackdrop"></div>
+<!-- STANDALONE MOBILE DRAWER (HEADER-ER BAIRE RAKHA HOYECHE) -->
+<div class="mobile-drawer-box" id="pureMobileDrawer">
+    <div class="mobile-drawer-header">
+        <img src="{{ asset('images/logo.png') }}" alt="Logo" height="34">
+        <button type="button" class="close-menu-btn" id="closeMobileDrawerBtn" aria-label="Close menu">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
+    <ul class="mobile-drawer-nav">
+        <li class="mobile-drawer-item">
+            <a href="{{ route('home') }}" class="mobile-nav-click {{ request()->routeIs('home') ? 'active' : '' }}">
+                <span>Home</span>
+                <i class="fas fa-chevron-right text-muted small"></i>
+            </a>
+        </li>
+        <li class="mobile-drawer-item">
+            <a href="{{ route('reservation') }}" class="mobile-nav-click {{ request()->routeIs('reservation') ? 'active' : '' }}">
+                <span>Reservation</span>
+                <i class="fas fa-chevron-right text-muted small"></i>
+            </a>
+        </li>
+        <li class="mobile-drawer-item">
+            <a href="{{ route('minivan') }}" class="mobile-nav-click {{ request()->routeIs('minivan') ? 'active' : '' }}">
+                <span>Minivan</span>
+                <i class="fas fa-chevron-right text-muted small"></i>
+            </a>
+        </li>
+        <li class="mobile-drawer-item">
+            <a href="{{ route('long.distance') }}" class="mobile-nav-click {{ request()->routeIs('long.distance') ? 'active' : '' }}">
+                <span>Long Distance</span>
+                <i class="fas fa-chevron-right text-muted small"></i>
+            </a>
+        </li>
+        <li class="mobile-drawer-item">
+            <a href="{{ route('child.seat') }}" class="mobile-nav-click {{ request()->routeIs('child.seat') ? 'active' : '' }}">
+                <span>Child Seat</span>
+                <i class="fas fa-chevron-right text-muted small"></i>
+            </a>
+        </li>
+        <li class="mobile-drawer-item">
+            <a href="{{ route('services') }}" class="mobile-nav-click {{ request()->routeIs('services') ? 'active' : '' }}">
+                <span>Services</span>
+                <i class="fas fa-chevron-right text-muted small"></i>
+            </a>
+        </li>
+        <li class="mobile-drawer-item">
+            <a href="{{ route('blogs') }}" class="mobile-nav-click {{ request()->routeIs('blogs') ? 'active' : '' }}">
+                <span>Blogs</span>
+                <i class="fas fa-chevron-right text-muted small"></i>
+            </a>
+        </li>
+        <li class="mobile-drawer-item">
+            <a href="{{ route('contact') }}" class="mobile-nav-click {{ request()->routeIs('contact') ? 'active' : '' }}">
+                <span>Contact</span>
+                <i class="fas fa-chevron-right text-muted small"></i>
+            </a>
+        </li>
+    </ul>
+
+    <div class="mobile-drawer-footer">
+        <a href="tel:+18577772125" class="desktop-call-btn w-100 justify-content-center">
+            <i class="fas fa-phone-alt"></i>
+            <span>Call: 857-777-2125</span>
+        </a>
+    </div>
+</div>
+
+<!-- BACKDROP OVERLAY -->
+<div class="mobile-drawer-overlay" id="pureDrawerOverlay"></div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const navbar = document.getElementById('mainNavbar');
-    const customToggler = document.getElementById('customMenuBtn');
-    const closeBtn = document.getElementById('closeMenuBtn');
-    const menu = document.getElementById('navbarCollapse');
-    const backdrop = document.getElementById('menuBackdrop');
+    const openBtn = document.getElementById('openMobileDrawerBtn');
+    const closeBtn = document.getElementById('closeMobileDrawerBtn');
+    const drawer = document.getElementById('pureMobileDrawer');
+    const overlay = document.getElementById('pureDrawerOverlay');
 
-    // 1. Scroll Effect
+    // Scroll Effect
     window.addEventListener('scroll', function() {
-        if (window.scrollY > 30) {
+        if (window.scrollY > 20) {
             navbar.classList.add('is-scrolled');
         } else {
             navbar.classList.remove('is-scrolled');
         }
     }, { passive: true });
 
-    // 2. Open / Close Menu Logic
-    function openMenu() {
-        menu.classList.add('show');
-        backdrop.classList.add('show');
+    // Open Drawer
+    function openDrawer() {
+        drawer.classList.add('is-open');
+        overlay.classList.add('is-open');
         document.body.style.overflow = 'hidden';
-        if (customToggler) customToggler.setAttribute('aria-expanded', 'true');
     }
 
-    function closeMenu() {
-        menu.classList.remove('show');
-        backdrop.classList.remove('show');
+    // Close Drawer
+    function closeDrawer() {
+        drawer.classList.remove('is-open');
+        overlay.classList.remove('is-open');
         document.body.style.overflow = '';
-        if (customToggler) customToggler.setAttribute('aria-expanded', 'false');
     }
 
-    if (customToggler) customToggler.addEventListener('click', openMenu);
-    if (closeBtn) closeBtn.addEventListener('click', closeMenu);
-    if (backdrop) backdrop.addEventListener('click', closeMenu);
+    if (openBtn) {
+        openBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            openDrawer();
+        });
+    }
 
-    // Close menu when clicking link
-    document.querySelectorAll('.navbar-collapse-custom .nav-link').forEach(link => {
-        link.addEventListener('click', () => {
-            if (window.innerWidth < 992) closeMenu();
+    if (closeBtn) {
+        closeBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            closeDrawer();
+        });
+    }
+
+    if (overlay) {
+        overlay.addEventListener('click', function() {
+            closeDrawer();
+        });
+    }
+
+    // DIRECT LINK NAVIGATION - PURE NATIVE JS
+    const mobileLinks = drawer.querySelectorAll('.mobile-nav-click');
+    mobileLinks.forEach(function(link) {
+        link.addEventListener('click', function(e) {
+            const url = this.getAttribute('href');
+            if (url && url !== '#' && !url.startsWith('javascript:')) {
+                e.preventDefault();
+                e.stopPropagation();
+                window.location.assign(url);
+            }
         });
     });
 
-    // Close on ESC
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closeMenu();
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeDrawer();
     });
 
-    // Reset overflow on desktop resize
-    window.addEventListener('resize', () => {
+    window.addEventListener('resize', function() {
         if (window.innerWidth >= 992) {
-            closeMenu();
+            closeDrawer();
         }
     });
 });
